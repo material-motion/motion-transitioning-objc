@@ -14,12 +14,21 @@
  limitations under the License.
  */
 
-// MARK: Catalog by convention
+import XCTest
+import Transitioning
 
-extension FadeExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["1. Fade transition"] }
+class TransitionControllerTests: XCTestCase {
+
+  func testExample() {
+    let viewController = UIViewController()
+    viewController.transitionController.transition = InstantCompletionTransition()
+
+    
+  }
 }
+final class InstantCompletionTransition: NSObject, Transition {
 
-extension CustomPresentationExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["2. Custom presentation transitions"] }
+  func start(with context: TransitionContext) {
+    context.transitionDidEnd()
+  }
 }

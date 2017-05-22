@@ -14,12 +14,17 @@
  limitations under the License.
  */
 
-// MARK: Catalog by convention
+import UIKit
 
-extension FadeExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["1. Fade transition"] }
+func createExampleView() -> UIView {
+  let view = UIView(frame: .init(x: 0, y: 0, width: 128, height: 128))
+  view.backgroundColor = .primaryColor
+  view.layer.cornerRadius = view.bounds.width / 2
+  return view
 }
 
-extension CustomPresentationExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["2. Custom presentation transitions"] }
+func createExampleSquareView() -> UIView {
+  let view = UIView(frame: .init(x: 0, y: 0, width: 128, height: 128))
+  view.backgroundColor = .primaryColor
+  return view
 }
