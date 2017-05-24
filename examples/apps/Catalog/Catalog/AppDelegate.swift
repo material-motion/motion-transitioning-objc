@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     self.window = window
 
     let rootViewController = CBCNodeListViewController(node: CBCCreateNavigationTree())
-    rootViewController.title = "Material Motion Transitioning"
+    rootViewController.title = "Transitioning"
     window.rootViewController = UINavigationController(rootViewController: rootViewController)
 
     window.makeKeyAndVisible()
