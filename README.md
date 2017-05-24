@@ -81,10 +81,10 @@ commands:
 
 ### Architecture
 
-Background: Transitions in iOS are customized by setting a `transitioningDelegate` on a view
-controller. When a view controller is presented, UIKit will ask the transitioning delegate for an
-animation, interaction, and presentation controller. These controllers are then expected to
-implement the transition's motion.
+> Background: Transitions in iOS are customized by setting a `transitioningDelegate` on a view
+> controller. When a view controller is presented, UIKit will ask the transitioning delegate for an
+> animation, interaction, and presentation controller. These controllers are then expected to
+> implement the transition's motion.
 
 Transitioning provides a thin layer atop these protocols with the following advantages:
 
