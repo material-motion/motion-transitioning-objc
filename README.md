@@ -88,9 +88,9 @@ commands:
 
 Transitioning provides a thin layer atop these protocols with the following advantages:
 
-- Every view controller has its own **transition controller**. This makes it easy to choose the
-  transition based on the context. This choice is persisted for the lifetime of the view controller.
-- Transitions are represented in terms of backward/forward rather than from/to. When presenting,
+- Every view controller has its own **transition controller**. This encourages choosing the
+  transition based on the context.
+- Transitions are represented in terms of **backward/forward** rather than from/to. When presenting,
   we're moving forward. When dismissing, we're moving backward. This makes it easier to refer to
   each "side" of a transition consistently.
 - Transition objects can customize their behavior by conforming to more `TransitionWith*` protocols.
