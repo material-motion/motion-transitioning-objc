@@ -77,6 +77,7 @@ commands:
 
 1. [Architecture](#architecture)
 2. [How to create a simple transition](#how-to-create-a-simple-transition)
+3. [How to customize presentation](#how-to-customize-presentation)
 
 ### Architecture
 
