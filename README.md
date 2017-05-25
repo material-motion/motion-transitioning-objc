@@ -17,6 +17,12 @@ viewController.transitionController.transition = CustomTransition()
 present(modalViewController, animated: true)
 ```
 
+```objc
+MyViewController *viewController = [[MyViewController alloc] init];
+viewController.mdm_transitionController.transition = [[CustomTransition alloc] init];
+[self presentViewController:viewController animated:true completion:nil];
+```
+
 The easiest way to make a transition with this library is to create a class that conforms to the
 `Transition` protocol:
 
@@ -34,6 +40,26 @@ final class CustomTransition: NSObject, Transition {
     CATransaction.commit()
   }
 }
+```
+
+```objc
+@interface CustomTransition: NSObject <MDMTransition>
+@end
+
+@implementation CustomTransition
+
+- (void)startWithContext:(id<MDMTransitionContext>)context {
+  [CATransaction begin];
+  [CATransaction setCompletionBlock:^{
+    [context transitionDidEnd];
+  }];
+
+  // Add animations...
+
+  [CATransaction commit];
+}
+
+@end
 ```
 
 ## Installation
