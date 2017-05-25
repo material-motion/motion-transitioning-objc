@@ -21,7 +21,7 @@
 /**
  A transition controller is a bridge between UIKit's view controller transitioning APIs and
  Material Motion transitions.
- 
+
  Each view controller owns its own transition controller via the mdm_transitionController property.
  */
 NS_SWIFT_NAME(TransitionController)

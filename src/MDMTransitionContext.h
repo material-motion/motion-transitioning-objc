@@ -74,7 +74,7 @@ NS_SWIFT_NAME(TransitionContext)
  */
 @property(nonatomic, strong, readonly, nonnull) UIViewController *foreViewController;
 
-/** 
+/**
  The container view for the transition as reported by UIKit's transition context.
  */
 @property(nonatomic, strong, readonly, nonnull) UIView *containerView;

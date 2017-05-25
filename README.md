@@ -138,7 +138,7 @@ presented or dismissed.
 ```swift
 final class FadeTransition: NSObject, Transition {
   func start(with context: TransitionContext) {
-    
+
   }
 }
 ```

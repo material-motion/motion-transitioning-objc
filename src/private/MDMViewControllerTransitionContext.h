@@ -21,7 +21,7 @@
 @protocol MDMTransition;
 @protocol MDMViewControllerTransitionContextDelegate;
 
-@interface MDMViewControllerTransitionContext: NSObject <MDMTransitionContext, UIViewControllerAnimatedTransitioning>
+@interface MDMViewControllerTransitionContext : NSObject <MDMTransitionContext, UIViewControllerAnimatedTransitioning>
 
 - (nonnull instancetype)initWithTransition:(nonnull id<MDMTransition>)transition
                                  direction:(MDMTransitionDirection)direction
@@ -29,7 +29,7 @@
                         backViewController:(nonnull UIViewController *)backViewController
                         foreViewController:(nonnull UIViewController *)foreViewController
                     presentationController:(nullable UIPresentationController *)presentationController
-NS_DESIGNATED_INITIALIZER;
+    NS_DESIGNATED_INITIALIZER;
 
 - (nonnull instancetype)init NS_UNAVAILABLE;
 

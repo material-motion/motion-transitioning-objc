@@ -16,5 +16,5 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FadeExampleObjcViewController: UIViewController
+@interface FadeExampleObjcViewController : UIViewController
 @end

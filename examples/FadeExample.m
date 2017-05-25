@@ -22,7 +22,7 @@
 // Motion Transitioning APIs in Objective-C. Please see the companion Swift implementation for
 // detailed comments.
 
-@interface FadeTransition: NSObject <MDMTransition>
+@interface FadeTransition : NSObject <MDMTransition>
 @end
 
 @implementation FadeExampleObjcViewController

@@ -24,11 +24,11 @@
  A transition controller may be used to implement custom transitions.
 
  The transition controller is lazily created upon access.
- 
+
  Side effects: If the view controller's transitioningDelegate is nil when the controller is created,
  then the controller will also be set to the transitioningDelegate property.
  */
 @property(nonatomic, strong, readonly, nonnull) id<MDMTransitionController> mdm_transitionController
-NS_SWIFT_NAME(transitionController);
+    NS_SWIFT_NAME(transitionController);
 
 @end

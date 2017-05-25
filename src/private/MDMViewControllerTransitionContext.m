@@ -21,7 +21,7 @@
 @implementation MDMViewControllerTransitionContext {
   id<MDMTransition> _transition;
   id<UIViewControllerContextTransitioning> _transitionContext;
-  UIPresentationController * _presentationController;
+  UIPresentationController *_presentationController;
 }
 
 @synthesize direction = _direction;
@@ -139,12 +139,14 @@
   UIView *throwawayView = [[UIView alloc] init];
   [self.containerView addSubview:throwawayView];
 
-  [UIView animateWithDuration:[self transitionDuration:_transitionContext] animations:^{
-    throwawayView.frame = CGRectOffset(throwawayView.frame, 1, 0);
+  [UIView animateWithDuration:[self transitionDuration:_transitionContext]
+      animations:^{
+        throwawayView.frame = CGRectOffset(throwawayView.frame, 1, 0);
 
-  } completion:^(BOOL finished) {
-    [throwawayView removeFromSuperview];
-  }];
+      }
+      completion:^(BOOL finished) {
+        [throwawayView removeFromSuperview];
+      }];
 }
 
 @end

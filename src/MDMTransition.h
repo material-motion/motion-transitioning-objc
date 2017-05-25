@@ -68,9 +68,11 @@ NS_SWIFT_NAME(TransitionWithPresentation)
 
  If nil is returned then no presentation controller will be used.
  */
+// clang-format off
 - (nullable UIPresentationController *)presentationControllerForPresentedViewController:(nonnull UIViewController *)presented
                                                                presentingViewController:(nonnull UIViewController *)presenting
                                                                    sourceViewController:(nullable UIViewController *)source
 NS_SWIFT_NAME(presentationController(forPresented:presenting:source:));
+// clang-format on
 
 @end

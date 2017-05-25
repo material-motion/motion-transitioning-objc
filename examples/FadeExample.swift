@@ -53,7 +53,7 @@ class FadeExampleViewController: ExampleViewController {
     let tap = UITapGestureRecognizer(target: self, action: #selector(didTap))
     view.addGestureRecognizer(tap)
   }
-  
+
   override func exampleInformation() -> ExampleInfo {
     return .init(title: type(of: self).catalogBreadcrumbs().last!,
                  instructions: "Tap to present a modal transition.")
