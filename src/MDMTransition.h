@@ -54,7 +54,8 @@ NS_SWIFT_NAME(TransitionWithPresentation)
  Note: In order for a presentation controller to be used the view controller's
  `modalPresentationStyle` must be `.custom`.
 
- Return `.none` if no presentation controller should be requested.
+ If you do not wish to use a presentation controller, return anything other than
+ `UIModalPresentationStyleCustom`.
  */
 - (UIModalPresentationStyle)defaultModalPresentationStyle;
 
