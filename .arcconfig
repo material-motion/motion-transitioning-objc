@@ -13,13 +13,13 @@
   "arc.feature.start.default": "origin/develop",
   "unit.xcode": {
     "build": {
-      "workspace": "MaterialMotionTransitioning.xcworkspace",
+      "workspace": "Transitioning.xcworkspace",
       "scheme": "UnitTests",
       "configuration": "Debug",
       "destination": "platform=iOS Simulator,name=iPhone 6s"
     },
     "coverage": {
-      "product": "MaterialMotionTransitioning.framework/MaterialMotionTransitioning"
+      "product": "Transitioning.framework/Transitioning"
     },
     "pre-build": "pod install"
   }

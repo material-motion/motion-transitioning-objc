@@ -14,12 +14,15 @@
  limitations under the License.
  */
 
-// MARK: Catalog by convention
+#import <Foundation/Foundation.h>
 
-extension FadeExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["1. Fade transition"] }
-}
+#import "MDMTransitionController.h"
 
-extension CustomPresentationExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["2. Custom presentation transitions"] }
-}
+@interface MDMPresentationTransitionController : NSObject <MDMTransitionController, UIViewControllerTransitioningDelegate>
+
+- (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController
+    NS_DESIGNATED_INITIALIZER;
+
+- (nonnull instancetype)init NS_UNAVAILABLE;
+
+@end
