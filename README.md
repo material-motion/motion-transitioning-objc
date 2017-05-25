@@ -215,7 +215,7 @@ controller's `start` will be invoked before the transition's `start`.
 > `transitionDidEnd`. The `Transition` object is usually the one that calls this method.
 
 ```swift
-extension DimmingPresentationController: Transition {
+extension MyPresentationController: Transition {
   func start(with context: TransitionContext) {
     // Your motion...
   }
