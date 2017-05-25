@@ -18,7 +18,7 @@ import UIKit
 import Transitioning
 
 // This example demonstrates the minimal path to building a custom transition using the Material
-// Motion Transitioning APIs. The essential steps have been documented below.
+// Motion Transitioning APIs in Swift. The essential steps have been documented below.
 
 class FadeExampleViewController: ExampleViewController {
 
@@ -40,6 +40,20 @@ class FadeExampleViewController: ExampleViewController {
     present(modalViewController, animated: true)
   }
 
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    let label = UILabel(frame: view.bounds)
+    label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    label.textColor = .white
+    label.textAlignment = .center
+    label.text = "Tap to start the transition"
+    view.addSubview(label)
+
+    let tap = UITapGestureRecognizer(target: self, action: #selector(didTap))
+    view.addGestureRecognizer(tap)
+  }
+  
   override func exampleInformation() -> ExampleInfo {
     return .init(title: type(of: self).catalogBreadcrumbs().last!,
                  instructions: "Tap to present a modal transition.")
@@ -47,7 +61,7 @@ class FadeExampleViewController: ExampleViewController {
 }
 
 // Transitions must be NSObject types that conform to the Transition protocol.
-final class FadeTransition: NSObject, Transition {
+private final class FadeTransition: NSObject, Transition {
 
   // The sole method we're expected to implement, start is invoked each time the view controller is
   // presented or dismissed.
@@ -81,23 +95,5 @@ final class FadeTransition: NSObject, Transition {
     context.foreViewController.view.layer.setValue(fade.toValue, forKeyPath: fade.keyPath!)
 
     CATransaction.commit()
-  }
-}
-
-// MARK: Supplemental code
-
-extension FadeExampleViewController {
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    let label = UILabel(frame: view.bounds)
-    label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    label.textColor = .white
-    label.textAlignment = .center
-    label.text = "Tap to start the transition"
-    view.addSubview(label)
-
-    let tap = UITapGestureRecognizer(target: self, action: #selector(didTap))
-    view.addGestureRecognizer(tap)
   }
 }

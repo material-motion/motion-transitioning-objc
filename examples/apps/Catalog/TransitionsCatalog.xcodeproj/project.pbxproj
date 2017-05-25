@@ -23,6 +23,7 @@
 		66BBC76F1ED4C8790015CB9B /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC76B1ED4C8790015CB9B /* HexColor.swift */; };
 		66BBC7701ED4C8790015CB9B /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC76C1ED4C8790015CB9B /* Layout.swift */; };
 		66BBC7721ED728DB0015CB9B /* TransitionWithPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC7711ED728DB0015CB9B /* TransitionWithPresentationTests.swift */; };
+		66BBC7751ED729A80015CB9B /* FadeExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC7741ED729A70015CB9B /* FadeExample.m */; };
 		773CE08578E72083CED81F9E /* Pods_TransitionsCatalog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56D9DF9E44D993D12FE85E99 /* Pods_TransitionsCatalog.framework */; };
 		FA87211112A578A2487B6013 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2408A4B72C0BA93CC963452F /* Pods_UnitTests.framework */; };
 /* End PBXBuildFile section */
@@ -72,6 +73,8 @@
 		66BBC76B1ED4C8790015CB9B /* HexColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
 		66BBC76C1ED4C8790015CB9B /* Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		66BBC7711ED728DB0015CB9B /* TransitionWithPresentationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionWithPresentationTests.swift; sourceTree = "<group>"; };
+		66BBC7731ED729A70015CB9B /* FadeExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FadeExample.h; sourceTree = "<group>"; };
+		66BBC7741ED729A70015CB9B /* FadeExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FadeExample.m; sourceTree = "<group>"; };
 		738D98979677D88D24513391 /* Pods-TransitionsCatalog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TransitionsCatalog.debug.xcconfig"; path = "../../../Pods/Target Support Files/Pods-TransitionsCatalog/Pods-TransitionsCatalog.debug.xcconfig"; sourceTree = "<group>"; };
 		D7BB2931AFCEE4C91AE92E5D /* Pods-UnitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.release.xcconfig"; path = "../../../Pods/Target Support Files/Pods-UnitTests/Pods-UnitTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -164,6 +167,8 @@
 			children = (
 				66BBC75D1ED37DAD0015CB9B /* FadeExample.swift */,
 				6629151D1ED5E0E0002B9A5D /* CustomPresentationExample.swift */,
+				66BBC7731ED729A70015CB9B /* FadeExample.h */,
+				66BBC7741ED729A70015CB9B /* FadeExample.m */,
 			);
 			name = examples;
 			path = ../..;
@@ -305,7 +310,7 @@
 				TargetAttributes = {
 					666FAA7F1D384A6B000363DA = {
 						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0830;
 					};
 					666FAA931D384A6B000363DA = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -466,6 +471,7 @@
 			files = (
 				666FAA841D384A6B000363DA /* AppDelegate.swift in Sources */,
 				66BBC76F1ED4C8790015CB9B /* HexColor.swift in Sources */,
+				66BBC7751ED729A80015CB9B /* FadeExample.m in Sources */,
 				66BBC76D1ED4C8790015CB9B /* ExampleViewController.swift in Sources */,
 				667A3F541DEE273000CB3A99 /* TableOfContents.swift in Sources */,
 				66BBC7701ED4C8790015CB9B /* Layout.swift in Sources */,
@@ -618,10 +624,12 @@
 			baseConfigurationReference = 738D98979677D88D24513391 /* Pods-TransitionsCatalog.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Catalog/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.Catalog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -631,6 +639,7 @@
 			baseConfigurationReference = 3734DFFD1C84494E48784617 /* Pods-TransitionsCatalog.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Catalog/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.Catalog;
