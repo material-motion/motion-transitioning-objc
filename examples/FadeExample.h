@@ -14,12 +14,7 @@
  limitations under the License.
  */
 
-// MARK: Catalog by convention
+#import <UIKit/UIKit.h>
 
-extension FadeExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["1. Fade transition"] }
-}
-
-extension CustomPresentationExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["2. Custom presentation transitions"] }
-}
+@interface FadeExampleObjcViewController : UIViewController
+@end
