@@ -36,14 +36,18 @@ class CustomPresentationExampleViewController: ExampleTableViewController {
     // calculation block.
     let modalDialog = VerticalSheetTransition()
     modalDialog.calculateFrameOfPresentedViewInContainerView = { info in
+      guard let containerView = info.containerView else {
+        assertionFailure("Missing container view during frame query.")
+        return .zero
+      }
       // Note: this block is retained for the lifetime of the view controller, so be careful not to
       // create a memory loop by referencing self or the presented view controller directly - use
       // the provided info structure to access these values instead.
 
       // Center the dialog in the container view.
       let size = CGSize(width: 200, height: 200)
-      return CGRect(x: (info.containerView.bounds.width - size.width) / 2,
-                    y: (info.containerView.bounds.height - size.height) / 2,
+      return CGRect(x: (containerView.bounds.width - size.width) / 2,
+                    y: (containerView.bounds.height - size.height) / 2,
                     width: size.width,
                     height: size.height)
     }
@@ -144,15 +148,8 @@ final class DimmingPresentationController: UIPresentationController {
   }
 
   override var frameOfPresentedViewInContainerView: CGRect {
-    guard let containerView = containerView else {
-      assertionFailure("Missing container view during frame query.")
-      return .zero
-    }
     // We delegate out our frame calculation here:
-    let info = CalculateFrameInfo(containerView: containerView,
-                                  presentingViewController: presentingViewController,
-                                  presentedViewController: presentedViewController)
-    return calculateFrameOfPresentedViewInContainerView(info)
+    return calculateFrameOfPresentedViewInContainerView(self)
   }
 
   override func presentationTransitionWillBegin() {
@@ -203,13 +200,7 @@ extension DimmingPresentationController: Transition {
   }
 }
 
-typealias CalculateFrame = (CalculateFrameInfo) -> CGRect
-
-struct CalculateFrameInfo {
-  let containerView: UIView
-  let presentingViewController: UIViewController
-  let presentedViewController: UIViewController
-}
+typealias CalculateFrame = (UIPresentationController) -> CGRect
 
 // MARK: Supplemental code
 
