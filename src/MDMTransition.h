@@ -37,6 +37,17 @@ NS_SWIFT_NAME(Transition)
 @end
 
 /**
+ A transition with custom duration is able to override the default transition duration.
+ */
+NS_SWIFT_NAME(TransitionWithCustomDuration)
+@protocol MDMTransitionWithCustomDuration
+/**
+ The desired duration of this transition in seconds.
+ */
+- (NSTimeInterval)transitionDurationWithContext:(nonnull id<MDMTransitionContext>)context;
+@end
+
+/**
  A transition with presentation is able to customize the overall presentation of the transition,
  including adding temporary views and changing the destination frame of the presented view
  controller.

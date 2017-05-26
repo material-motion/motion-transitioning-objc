@@ -50,8 +50,10 @@
 #pragma mark - UIViewControllerAnimatedTransitioning
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-  // TODO(featherless): Expose a TransitionWithTiming protocol that allows the transition to
-  // customize this value.
+  if ([_transition respondsToSelector:@selector(transitionDurationWithContext:)]) {
+    id<MDMTransitionWithCustomDuration> withCustomDuration = (id<MDMTransitionWithCustomDuration>)_transition;
+    return [withCustomDuration transitionDurationWithContext:self];
+  }
   return 0.35;
 }
 

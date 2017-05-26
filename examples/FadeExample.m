@@ -60,6 +60,10 @@
 
 @implementation FadeTransition
 
+- (NSTimeInterval)transitionDurationWithContext:(nonnull id<MDMTransitionContext>)context {
+  return 0.3;
+}
+
 - (void)startWithContext:(id<MDMTransitionContext>)context {
   [CATransaction begin];
   [CATransaction setCompletionBlock:^{
