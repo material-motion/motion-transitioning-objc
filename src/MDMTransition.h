@@ -48,6 +48,29 @@ NS_SWIFT_NAME(TransitionWithCustomDuration)
 @end
 
 /**
+ A transition can return an alternative fallback transition instance.
+ */
+NS_SWIFT_NAME(TransitionWithFallback)
+@protocol MDMTransitionWithFallback
+
+/**
+ Asks the receiver to return a transition instance that should be used to drive this transition.
+
+ If nil is returned, then the system transition will be used.
+ If self is returned, then the receiver will be used.
+ If a new instance is returned and the returned instance also conforms to this protocol, the
+ returned instance will be queried for a fallback.
+
+ Will be queried twice. The first time this method is invoked it's possible to return nil. Doing so
+ will result in UIKit taking over the transition and a system transition being used. The second time
+ this method is invoked, the custom transition will already be underway from UIKit's point of view
+ and a nil return value will be treated equivalent to returning self.
+ */
+- (nullable id<MDMTransition>)fallbackTransitionWithContext:(nonnull id<MDMTransitionContext>)context;
+
+@end
+
+/**
  A transition with presentation is able to customize the overall presentation of the transition,
  including adding temporary views and changing the destination frame of the presented view
  controller.

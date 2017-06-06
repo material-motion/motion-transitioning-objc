@@ -56,6 +56,10 @@
   }
 }
 
+- (id<MDMTransition>)activeTransition {
+  return _context.transition;
+}
+
 #pragma mark - UIViewControllerTransitioningDelegate
 
 // Animated transitions
