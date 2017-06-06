@@ -33,6 +33,8 @@
 
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
+@property(nonatomic, strong, nullable) id<MDMTransition> transition;
+
 @property(nonatomic, weak, nullable) id<MDMViewControllerTransitionContextDelegate> delegate;
 
 @end

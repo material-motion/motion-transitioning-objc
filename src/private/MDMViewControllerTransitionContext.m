@@ -19,7 +19,6 @@
 #import "MDMTransition.h"
 
 @implementation MDMViewControllerTransitionContext {
-  id<MDMTransition> _transition;
   id<UIViewControllerContextTransitioning> _transitionContext;
   UIPresentationController *_presentationController;
 }
@@ -43,6 +42,11 @@
     _backViewController = backViewController;
     _foreViewController = foreViewController;
     _presentationController = presentationController;
+
+    _transition = [self fallbackForTransition:_transition];
+  }
+  if (!_transition) {
+    return nil;
   }
   return self;
 }
@@ -50,8 +54,10 @@
 #pragma mark - UIViewControllerAnimatedTransitioning
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-  // TODO(featherless): Expose a TransitionWithTiming protocol that allows the transition to
-  // customize this value.
+  if ([_transition respondsToSelector:@selector(transitionDurationWithContext:)]) {
+    id<MDMTransitionWithCustomDuration> withCustomDuration = (id<MDMTransitionWithCustomDuration>)_transition;
+    return [withCustomDuration transitionDurationWithContext:self];
+  }
   return 0.35;
 }
 
@@ -116,6 +122,11 @@
     [to.view layoutIfNeeded];
   }
 
+  id<MDMTransition> fallback = [self fallbackForTransition:_transition];
+  if (fallback) {
+    _transition = fallback;
+  }
+
   [self anticipateOnlyExplicitAnimations];
 
   [CATransaction begin];
@@ -147,6 +158,19 @@
       completion:^(BOOL finished) {
         [throwawayView removeFromSuperview];
       }];
+}
+
+- (id<MDMTransition>)fallbackForTransition:(id<MDMTransition>)transition {
+  while ([transition respondsToSelector:@selector(fallbackTransitionWithContext:)]) {
+    id<MDMTransitionWithFallback> withFallback = (id<MDMTransitionWithFallback>)transition;
+
+    id<MDMTransition> fallback = [withFallback fallbackTransitionWithContext:self];
+    if (fallback == transition) {
+      break;
+    }
+    transition = fallback;
+  }
+  return transition;
 }
 
 @end
