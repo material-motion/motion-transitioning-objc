@@ -101,7 +101,13 @@ final class VerticalSheetTransition: NSObject, Transition {
   }
 }
 
-extension VerticalSheetTransition: TransitionWithPresentation {
+extension VerticalSheetTransition: TransitionWithPresentation, TransitionWithFallback {
+
+  // We customize the transition going forward but fall back to UIKit for dismissal. Our
+  // presentation controller will govern both of these transitions.
+  func fallbackTransition(with context: TransitionContext) -> Transition? {
+    return context.direction == .forward ? self : nil
+  }
 
   // This method is invoked when we assign the transition to the transition controller. The result
   // is assigned to the view controller's modalPresentationStyle property.
@@ -174,9 +180,21 @@ final class DimmingPresentationController: UIPresentationController {
     }
   }
 
+  override func dismissalTransitionWillBegin() {
+    // We fall back to an alongside fade out when there is no active transition instance because
+    // our start implementation won't be invoked in this case.
+    if presentedViewController.transitionController.activeTransition == nil {
+      presentedViewController.transitionCoordinator?.animate(alongsideTransition: { context in
+        self.dimmingView.alpha = 0
+      })
+    }
+  }
+
   override func dismissalTransitionDidEnd(_ completed: Bool) {
     if completed {
       dimmingView.removeFromSuperview()
+    } else {
+      dimmingView.alpha = 1
     }
   }
 
