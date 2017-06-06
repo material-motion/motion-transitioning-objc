@@ -1,7 +1,29 @@
-# #develop#
+# 1.1.0
 
- TODO: Enumerate changes.
+This minor release introduces two new features to the Transition protocol family.
 
+## New features
+
+* [Add support for fallback transitioning. (#16)](https://github.com/material-motion/transitioning-objc/commit/e139cc2c5bb7234df6b40cc82bfb81ded57ccbf8) (featherless)
+* [Add support for customizing transition durations (#11)](https://github.com/material-motion/transitioning-objc/commit/cf1e7961f51f9f07a252343bf618a45b2a00d707) (Eric Tang)
+
+## API changes
+
+### MDMTransitionWithFallback
+
+*new* protocol: `MDMTransitionWithFallback`
+
+*new* method: `-fallbackTransitionWithContext:` in `MDMTransitionWithFallback`
+
+### MDMTransitionWithCustomDuration
+
+*new* protocol: `MDMTransitionWithCustomDuration`
+
+*new* method: `-transitionDurationWithContext:` in `MDMTransitionWithCustomDuration`
+
+### MDMTransitionController
+
+*new* property: `activeTransition` in `MDMTransitionController`
 
 # 1.0.0
 
