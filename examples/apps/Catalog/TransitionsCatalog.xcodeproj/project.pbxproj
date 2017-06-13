@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		072A063B1EEE26A900B9B5FC /* MenuExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072A063A1EEE26A900B9B5FC /* MenuExample.swift */; };
 		6629151E1ED5E0E0002B9A5D /* CustomPresentationExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629151D1ED5E0E0002B9A5D /* CustomPresentationExample.swift */; };
 		662915201ED5E137002B9A5D /* ModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629151F1ED5E137002B9A5D /* ModalViewController.swift */; };
 		662915231ED64A10002B9A5D /* TransitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662915221ED64A10002B9A5D /* TransitionTests.swift */; };
@@ -46,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		072A063A1EEE26A900B9B5FC /* MenuExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuExample.swift; sourceTree = "<group>"; };
 		0C2327F961D4F16DEBF0EEB8 /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "../../../Pods/Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2408A4B72C0BA93CC963452F /* Pods_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3734DFFD1C84494E48784617 /* Pods-TransitionsCatalog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TransitionsCatalog.release.xcconfig"; path = "../../../Pods/Target Support Files/Pods-TransitionsCatalog/Pods-TransitionsCatalog.release.xcconfig"; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				6629151D1ED5E0E0002B9A5D /* CustomPresentationExample.swift */,
 				66BBC7731ED729A70015CB9B /* FadeExample.h */,
 				66BBC7741ED729A70015CB9B /* FadeExample.m */,
+				072A063A1EEE26A900B9B5FC /* MenuExample.swift */,
 			);
 			name = examples;
 			path = ../..;
@@ -472,6 +475,7 @@
 				666FAA841D384A6B000363DA /* AppDelegate.swift in Sources */,
 				66BBC76F1ED4C8790015CB9B /* HexColor.swift in Sources */,
 				66BBC7751ED729A80015CB9B /* FadeExample.m in Sources */,
+				072A063B1EEE26A900B9B5FC /* MenuExample.swift in Sources */,
 				66BBC76D1ED4C8790015CB9B /* ExampleViewController.swift in Sources */,
 				667A3F541DEE273000CB3A99 /* TableOfContents.swift in Sources */,
 				66BBC7701ED4C8790015CB9B /* Layout.swift in Sources */,
