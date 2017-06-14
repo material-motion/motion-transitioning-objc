@@ -1,6 +1,6 @@
 PODS:
   - CatalogByConvention (2.1.1)
-  - Transitioning (1.1.0)
+  - Transitioning (1.1.1)
 
 DEPENDENCIES:
   - CatalogByConvention
@@ -12,7 +12,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   CatalogByConvention: c3a5319de04250a7cd4649127fcfca5fe3322a43
-  Transitioning: e5702ef6924d62d19c2ad5f6de9d11fa2c6b5362
+  Transitioning: ea1a8225812799c7ff07630af17008ab5e306bf3
 
 PODFILE CHECKSUM: 1949e62e9d70d554783c0bb931d6b52780775cfb
 
