@@ -1,7 +1,15 @@
-# #develop#
+# 1.1.1
 
- TODO: Enumerate changes.
+This is a patch fix release to address build issues within Google's build environment.
 
+## Source changes
+
+* [Add missing UIKit.h header imports.](https://github.com/material-motion/transitioning-objc/commit/3b653bdd1758a5c47d277af36369e977b3774095) (Jeff Verkoeyen)
+
+## Non-source changes
+
+* [Update Podfile.lock.](https://github.com/material-motion/transitioning-objc/commit/8185ae402e6952e2727af8b7ff0cb4c712d05623) (Jeff Verkoeyen)
+* [Add sliding menu as an example (#21)](https://github.com/material-motion/transitioning-objc/commit/4654e4c9c4c4ff49ac007f4b16eaa2458d86f98c) (Eric Tang)
 
 # 1.1.0
 
