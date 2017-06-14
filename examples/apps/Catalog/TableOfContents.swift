@@ -20,6 +20,10 @@ extension FadeExampleViewController {
   class func catalogBreadcrumbs() -> [String] { return ["1. Fade transition"] }
 }
 
+extension MenuExampleViewController {
+  class func catalogBreadcrumbs() -> [String] { return ["2. Menu transition"] }
+}
+
 extension CustomPresentationExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["2. Custom presentation transitions"] }
+  class func catalogBreadcrumbs() -> [String] { return ["3. Custom presentation transitions"] }
 }
