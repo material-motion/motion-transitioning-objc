@@ -79,4 +79,8 @@ NS_SWIFT_NAME(TransitionContext)
  */
 @property(nonatomic, strong, readonly, nonnull) UIView *containerView;
 
+/**
+ The presentation view controller for this transition.
+ */
+@property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
 @end

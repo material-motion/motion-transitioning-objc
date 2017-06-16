@@ -20,13 +20,13 @@
 
 @implementation MDMViewControllerTransitionContext {
   id<UIViewControllerContextTransitioning> _transitionContext;
-  UIPresentationController *_presentationController;
 }
 
 @synthesize direction = _direction;
 @synthesize sourceViewController = _sourceViewController;
 @synthesize backViewController = _backViewController;
 @synthesize foreViewController = _foreViewController;
+@synthesize presentationController = _presentationController;
 
 - (nonnull instancetype)initWithTransition:(nonnull id<MDMTransition>)transition
                                  direction:(MDMTransitionDirection)direction
