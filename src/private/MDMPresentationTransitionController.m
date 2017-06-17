@@ -84,6 +84,14 @@
   return _context;
 }
 
+- (nullable id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator {
+  return [self prepareForInteractiveTransition];
+}
+
+- (nullable id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator {
+  return [self prepareForInteractiveTransition];
+}
+
 // Presentation
 
 - (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented
@@ -129,4 +137,36 @@
   }
 }
 
+- (nullable id<UIViewControllerInteractiveTransitioning>)prepareForInteractiveTransition {
+  Boolean isInteractive = false;
+
+  Boolean isInteractiveResponds = false;
+  Boolean startWithInteractiveResponds = false;
+
+  if ([_transition respondsToSelector:@selector(isInteractive:)]) {
+    isInteractiveResponds = true;
+  } else {
+    return nil;
+  }
+
+  if ([_transition respondsToSelector:@selector(startWithInteractiveContext:)]) {
+    startWithInteractiveResponds = true;
+  } else {
+    return nil;
+  }
+
+  if (isInteractiveResponds && startWithInteractiveResponds) {
+    id<MDMInteractiveTransition> interactiveTransition = (id<MDMInteractiveTransition>)_transition;
+    isInteractive = [interactiveTransition isInteractive:_context];
+    if (isInteractive) {
+      [interactiveTransition startWithInteractiveContext:_context];
+    }
+  }
+
+  UIPercentDrivenInteractiveTransition *pdi = [_context getPercentIT];
+  // Setting the completion speed to a value close to 1.0 prevents
+  // the bar from sometimes jumping.
+  pdi.completionSpeed = 0.933;
+  return isInteractive == false ? nil : pdi;
+}
 @end
