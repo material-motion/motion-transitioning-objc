@@ -1,12 +1,12 @@
-# Transitioning
+# Material Motion Transitioning
 
 > Light-weight API for building UIViewController transitions.
 
 [![Build Status](https://travis-ci.org/material-motion/transitioning-objc.svg?branch=develop)](https://travis-ci.org/material-motion/transitioning-objc)
 [![codecov](https://codecov.io/gh/material-motion/transitioning-objc/branch/develop/graph/badge.svg)](https://codecov.io/gh/material-motion/transitioning-objc)
-[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/Transitioning.svg)](https://cocoapods.org/pods/Transitioning)
-[![Platform](https://img.shields.io/cocoapods/p/Transitioning.svg)](http://cocoadocs.org/docsets/Transitioning)
-[![Docs](https://img.shields.io/cocoapods/metrics/doc-percent/Transitioning.svg)](http://cocoadocs.org/docsets/Transitioning)
+[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/MaterialMotionTransitioning.svg)](https://cocoapods.org/pods/MaterialMotionTransitioning)
+[![Platform](https://img.shields.io/cocoapods/p/MaterialMotionTransitioning.svg)](http://cocoadocs.org/docsets/MaterialMotionTransitioning)
+[![Docs](https://img.shields.io/cocoapods/metrics/doc-percent/MaterialMotionTransitioning.svg)](http://cocoadocs.org/docsets/MaterialMotionTransitioning)
 
 This library standardizes the way transitions are built on iOS so that with a single line of code
 you can pick the custom transition you want to use:
@@ -73,9 +73,9 @@ final class CustomTransition: NSObject, Transition {
 >
 >     gem install cocoapods
 
-Add `Transitioning` to your `Podfile`:
+Add `MaterialMotionTransitioning` to your `Podfile`:
 
-    pod 'Transitioning'
+    pod 'MaterialMotionTransitioning'
 
 Then run the following command:
 
@@ -85,7 +85,7 @@ Then run the following command:
 
 Import the framework:
 
-    @import Transitioning;
+    @import MaterialMotionTransitioning;
 
 You will now have access to all of the APIs.
 
@@ -97,7 +97,7 @@ commands:
     git clone https://github.com/material-motion/transitioning-objc.git
     cd transitioning-objc
     pod install
-    open Transitioning.xcworkspace
+    open MaterialMotionTransitioning.xcworkspace
 
 ## Guides
 
@@ -112,7 +112,7 @@ commands:
 > animation, interaction, and presentation controller. These controllers are then expected to
 > implement the transition's motion.
 
-Transitioning provides a thin layer atop these protocols with the following advantages:
+MaterialMotionTransitioning provides a thin layer atop these protocols with the following advantages:
 
 - Every view controller has its own **transition controller**. This encourages choosing the
   transition based on the context.
