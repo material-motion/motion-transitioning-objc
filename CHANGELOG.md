@@ -1,7 +1,6 @@
-# #develop#
+# 3.0.1
 
- TODO: Enumerate changes.
-
+Fixed the umbrella header name to match the library name.
 
 # 3.0.0 (MotionTransitioning)
 
