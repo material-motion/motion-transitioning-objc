@@ -1,4 +1,4 @@
-# 1.0.0 (MaterialMotionTransitioning)
+# 2.0.0 (MaterialMotionTransitioning)
 
 The library has been renamed to MaterialMotionTransitioning.
 
