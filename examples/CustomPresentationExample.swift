@@ -15,7 +15,7 @@
  */
 
 import UIKit
-import Transitioning
+import MaterialMotionTransitioning
 
 // This example demonstrates how to make use of presentation controllers to build a flexible modal
 // transition that supports presenting view controllers at aribtrary frames on the screen.
