@@ -1,7 +1,10 @@
-# #develop#
+# 3.0.0 (MotionTransitioning)
 
- TODO: Enumerate changes.
+The library has been renamed to MotionTransitioning.
 
+---
+
+Prior releases under the library name `MaterialMotionTransitioning`.
 
 # 2.0.0 (MaterialMotionTransitioning)
 
