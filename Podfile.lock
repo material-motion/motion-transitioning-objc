@@ -1,19 +1,19 @@
 PODS:
   - CatalogByConvention (2.1.1)
-  - MaterialMotionTransitioning (2.0.0)
+  - MotionTransitioning (3.0.0)
 
 DEPENDENCIES:
   - CatalogByConvention
-  - MaterialMotionTransitioning (from `./`)
+  - MotionTransitioning (from `./`)
 
 EXTERNAL SOURCES:
-  MaterialMotionTransitioning:
+  MotionTransitioning:
     :path: "./"
 
 SPEC CHECKSUMS:
   CatalogByConvention: c3a5319de04250a7cd4649127fcfca5fe3322a43
-  MaterialMotionTransitioning: e89c47d3a019d1cec945c4ab8653cfc417430e8f
+  MotionTransitioning: 108f968d1251c13aae3a6921d8d87e57c741fa54
 
-PODFILE CHECKSUM: a339d385d38b29a0052f32984921c8567d0c57e5
+PODFILE CHECKSUM: db2e7ac8d9d65704a2cbffa0b77e39a574cb7248
 
 COCOAPODS: 1.2.1

@@ -15,7 +15,7 @@
  */
 
 import UIKit
-import Transitioning
+import MotionTransitioning
 
 class MenuExampleViewController: ExampleViewController {
 
