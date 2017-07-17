@@ -1,3 +1,7 @@
+# 3.0.1
+
+Fixed the umbrella header name to match the library name.
+
 # 3.0.0 (MotionTransitioning)
 
 The library has been renamed to MotionTransitioning.
