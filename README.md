@@ -104,6 +104,7 @@ commands:
 1. [Architecture](#architecture)
 2. [How to create a simple transition](#how-to-create-a-simple-transition)
 3. [How to customize presentation](#how-to-customize-presentation)
+4. [How to customize navigation controller transitions](#how-to-customize-navigation-controller-transitions)
 
 ### Architecture
 
@@ -246,6 +247,27 @@ extension MyPresentationController: Transition {
     // Your motion...
   }
 }
+```
+
+### How to customize navigation controller transitions
+
+`UINavigationController` ignores the `transitioningDelegate` property on any view
+controller pushed onto or popped off of the stack, instead relying on its delegate instance to
+customize any transitions. This means that our `transitionController`  will be
+ignored by a navigation controller.
+
+In order to customize individual push/pop transitions with the `transitionController`, you
+can make use of the `TransitionNavigationControllerDelegate` singleton class. If you
+assign a shared delegate to your navigation controller's delegate, your navigation controller
+will honor the animation and interaction settings defined by your individual view controller's
+`transitionController`.
+
+```swift
+navigationController.delegate = TransitionNavigationControllerDelegate.sharedDelegate()
+
+// Subsequent pushes and pops will honor the pushed/popped view controller's
+// transitionController settings as though the view controllers were being
+// presented/dismissed.
 ```
 
 ## Contributing
