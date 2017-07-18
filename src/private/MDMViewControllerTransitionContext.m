@@ -44,9 +44,9 @@
     _presentationController = presentationController;
 
     _transition = [self fallbackForTransition:_transition];
-  }
-  if (!_transition) {
-    return nil;
+    if (!_transition) {
+      return nil;
+    }
   }
   return self;
 }
