@@ -43,6 +43,8 @@ NS_SWIFT_NAME(TransitionContext)
  */
 - (void)transitionDidEnd;
 
+@property(nonatomic, readonly) BOOL wasCancelled;
+
 /**
  The direction this transition is moving in.
  */
@@ -83,4 +85,12 @@ NS_SWIFT_NAME(TransitionContext)
  The presentation view controller for this transition.
  */
 @property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
+@end
+
+NS_SWIFT_NAME(InteractiveTransitionContext)
+@protocol MDMInteractiveTransitionContext <MDMTransitionContext>
+- (UIPercentDrivenInteractiveTransition *_Nonnull)getPercentIT;
+- (void)updatePercent:(CGFloat)percent;
+- (void)finishInteractiveTransition;
+- (void)cancelInteractiveTransition;
 @end

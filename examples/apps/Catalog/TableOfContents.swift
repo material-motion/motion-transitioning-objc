@@ -24,6 +24,10 @@ extension MenuExampleViewController {
   class func catalogBreadcrumbs() -> [String] { return ["2. Menu transition"] }
 }
 
+extension MenuInteractiveExampleViewController {
+  class func catalogBreadcrumbs() -> [String] { return ["2. Menu transition (interactive)"] }
+}
+
 extension CustomPresentationExampleViewController {
   class func catalogBreadcrumbs() -> [String] { return ["3. Custom presentation transitions"] }
 }

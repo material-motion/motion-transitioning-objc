@@ -20,6 +20,7 @@
 
 @implementation MDMViewControllerTransitionContext {
   id<UIViewControllerContextTransitioning> _transitionContext;
+  UIPercentDrivenInteractiveTransition *_percent;
 }
 
 @synthesize direction = _direction;
@@ -27,7 +28,7 @@
 @synthesize backViewController = _backViewController;
 @synthesize foreViewController = _foreViewController;
 @synthesize presentationController = _presentationController;
-
+@synthesize wasCancelled = _wasCancelled;
 - (nonnull instancetype)initWithTransition:(nonnull id<MDMTransition>)transition
                                  direction:(MDMTransitionDirection)direction
                       sourceViewController:(nullable UIViewController *)sourceViewController
@@ -44,6 +45,7 @@
     _presentationController = presentationController;
 
     _transition = [self fallbackForTransition:_transition];
+    _percent = [[UIPercentDrivenInteractiveTransition alloc] init];
   }
   if (!_transition) {
     return nil;
@@ -82,7 +84,14 @@
 }
 
 - (void)transitionDidEnd {
-  [_transitionContext completeTransition:true];
+  BOOL wasCanceled = [_transitionContext transitionWasCancelled];
+  if (wasCanceled) {
+    _wasCancelled = false;
+    [_transitionContext completeTransition:false];
+  } else {
+    _wasCancelled = true;
+    [_transitionContext completeTransition:true];
+  }
 
   _transition = nil;
 
@@ -171,6 +180,22 @@
     transition = fallback;
   }
   return transition;
+}
+
+- (UIPercentDrivenInteractiveTransition *_Nonnull)getPercentIT {
+  return _percent;
+}
+
+- (void)updatePercent:(CGFloat)percent {
+  [_percent updateInteractiveTransition:percent];
+}
+
+- (void)finishInteractiveTransition {
+  [_percent finishInteractiveTransition];
+}
+
+- (void)cancelInteractiveTransition {
+  [_percent cancelInteractiveTransition];
 }
 
 @end
