@@ -53,7 +53,7 @@
 }
 
 + (NSArray<NSString *> *)catalogBreadcrumbs {
-  return @[ @"1. Fade transition (objc)" ];
+  return @[ @"Fade transition (objc)" ];
 }
 
 @end

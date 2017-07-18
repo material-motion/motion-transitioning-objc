@@ -60,7 +60,7 @@
                                                                 presentingController:fromVC
                                                                     sourceController:navigationController];
   } else {
-    animator = [toVC.transitioningDelegate animationControllerForDismissedController:fromVC];
+    animator = [fromVC.transitioningDelegate animationControllerForDismissedController:fromVC];
   }
 
   if (!animator) {
