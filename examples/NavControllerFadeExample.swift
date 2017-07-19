@@ -24,6 +24,7 @@ class NavControllerFadeExampleViewController: ExampleViewController {
 
   func didTap() {
     let modalViewController = ModalViewController()
+    modalViewController.title = "Example view controller"
 
     // The transition controller is an associated object on all UIViewController instances that
     // allows you to customize the way the view controller is presented. The primary API on the
