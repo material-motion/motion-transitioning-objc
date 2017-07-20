@@ -1,3 +1,24 @@
+# 3.1.0
+
+This minor release resolves a build warning and introduces the ability to customize navigation
+controller transitions.
+
+## New features
+
+- MDMTransitionNavigationControllerDelegate makes it possible to customize transitions in a
+  UINavigationController.
+
+## Source changes
+
+* [Add transition navigation controller delegate (#29)](https://github.com/material-motion/transitioning-objc/commit/c1c212030bb8ef8abc3eaaccc315e1880b1b01a1) (featherless)
+* [Fix null dereference caught by the static analyzer (#30)](https://github.com/material-motion/transitioning-objc/commit/1aef0121ec4b5313ba3883a3fd3425551c19af14) (ianegordon)
+
+## API changes
+
+## MDMTransitionNavigationControllerDelegate
+
+*new* class: MDMTransitionNavigationControllerDelegate.
+
 # 3.0.1
 
 Fixed the umbrella header name to match the library name.
