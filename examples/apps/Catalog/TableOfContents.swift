@@ -17,13 +17,17 @@
 // MARK: Catalog by convention
 
 extension FadeExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["1. Fade transition"] }
+  class func catalogBreadcrumbs() -> [String] { return ["Fade transition"] }
+}
+
+extension NavControllerFadeExampleViewController {
+  class func catalogBreadcrumbs() -> [String] { return ["Fade transition (nav controller)"] }
 }
 
 extension MenuExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["2. Menu transition"] }
+  class func catalogBreadcrumbs() -> [String] { return ["Menu transition"] }
 }
 
 extension CustomPresentationExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["3. Custom presentation transitions"] }
+  class func catalogBreadcrumbs() -> [String] { return ["Custom presentation transitions"] }
 }

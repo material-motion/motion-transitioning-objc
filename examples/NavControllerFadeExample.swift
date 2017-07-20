@@ -17,13 +17,14 @@
 import UIKit
 import MotionTransitioning
 
-// This example demonstrates the minimal path to building a custom transition using the Motion
-// Transitioning APIs in Swift. The essential steps have been documented below.
+// This example demonstrates how to build a custom UINavigationController transition using the
+// Motion Transitioning APIs in Swift. The essential steps have been documented below.
 
-class FadeExampleViewController: ExampleViewController {
+class NavControllerFadeExampleViewController: ExampleViewController {
 
   func didTap() {
     let modalViewController = ModalViewController()
+    modalViewController.title = "Example view controller"
 
     // The transition controller is an associated object on all UIViewController instances that
     // allows you to customize the way the view controller is presented. The primary API on the
@@ -32,12 +33,27 @@ class FadeExampleViewController: ExampleViewController {
     // FadeTransition, so we'll make use of that now:
     modalViewController.transitionController.transition = FadeTransition()
 
-    // Note that once we assign the transition object to the view controller, the transition will
-    // govern all subsequent presentations and dismissals of that view controller instance. If we
-    // want to use a different transition (e.g. to use an edge-swipe-to-dismiss transition) then we
-    // can simply change the transition object before initiating the transition.
+    cachedNavDelegate = navigationController?.delegate
 
-    present(modalViewController, animated: true)
+    // In order to customize navigation controller transitions you must implement the necessary
+    // delegate methods. By setting the shared transition navigation controller delegate instance
+    // we're able to customize push/pop transitions using our transitionController.
+
+    navigationController?.delegate = TransitionNavigationControllerDelegate.sharedDelegate()
+
+    navigationController?.pushViewController(modalViewController, animated: true)
+  }
+  private var cachedNavDelegate: UINavigationControllerDelegate?
+
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+
+    if parent == nil { // Popped off
+      // Restore the previous delegate, if any.
+      navigationController?.delegate = cachedNavDelegate
+
+      cachedNavDelegate = nil
+    }
   }
 
   override func viewDidLoad() {
