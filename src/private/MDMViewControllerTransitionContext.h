@@ -21,7 +21,7 @@
 @protocol MDMTransition;
 @protocol MDMViewControllerTransitionContextDelegate;
 
-@interface MDMViewControllerTransitionContext : NSObject <MDMTransitionContext, UIViewControllerAnimatedTransitioning>
+@interface MDMViewControllerTransitionContext : NSObject <MDMTransitionContext, MDMInteractiveTransitionContext, UIViewControllerAnimatedTransitioning>
 
 - (nonnull instancetype)initWithTransition:(nonnull id<MDMTransition>)transition
                                  direction:(MDMTransitionDirection)direction
