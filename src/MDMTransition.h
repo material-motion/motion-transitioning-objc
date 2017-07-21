@@ -42,10 +42,12 @@ NS_SWIFT_NAME(Transition)
  */
 NS_SWIFT_NAME(TransitionWithCustomDuration)
 @protocol MDMTransitionWithCustomDuration
+
 /**
  The desired duration of this transition in seconds.
  */
 - (NSTimeInterval)transitionDurationWithContext:(nonnull id<MDMTransitionContext>)context;
+
 @end
 
 /**
