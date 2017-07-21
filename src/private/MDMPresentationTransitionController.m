@@ -17,6 +17,7 @@
 #import "MDMPresentationTransitionController.h"
 
 #import "MDMTransition.h"
+#import "MDMTransitionInteractionController.h"
 #import "MDMViewControllerTransitionContext.h"
 
 @interface MDMPresentationTransitionController () <UIViewControllerTransitioningDelegate, MDMViewControllerTransitionContextDelegate>
@@ -34,6 +35,7 @@
 }
 
 @synthesize transition = _transition;
+@synthesize interactionController = _interactionController;
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController {
   self = [super init];
@@ -54,6 +56,12 @@
     UIModalPresentationStyle style = [withPresentation defaultModalPresentationStyle];
     _associatedViewController.modalPresentationStyle = style;
   }
+}
+
+- (void)setInteractionController:(id<MDMTransitionInteractionController>)interactionController {
+  _interactionController = interactionController;
+
+  [_interactionController setAssociatedViewController:_associatedViewController];
 }
 
 - (id<MDMTransition>)activeTransition {
@@ -85,11 +93,13 @@
 }
 
 - (nullable id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator {
-  return [self prepareForInteractiveTransition];
+  [self prepareForInteractiveTransition];
+  return [_interactionController interactionCoordinatorForTransitionWithContext:_context];
 }
 
 - (nullable id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator {
-  return [self prepareForInteractiveTransition];
+  [self prepareForInteractiveTransition];
+  return [_interactionController interactionCoordinatorForTransitionWithContext:_context];
 }
 
 // Presentation
@@ -137,36 +147,8 @@
   }
 }
 
-- (nullable id<UIViewControllerInteractiveTransitioning>)prepareForInteractiveTransition {
-  Boolean isInteractive = false;
+- (void)prepareForInteractiveTransition {
 
-  Boolean isInteractiveResponds = false;
-  Boolean startWithInteractiveResponds = false;
-
-  if ([_transition respondsToSelector:@selector(isInteractive:)]) {
-    isInteractiveResponds = true;
-  } else {
-    return nil;
-  }
-
-  if ([_transition respondsToSelector:@selector(startWithInteractiveContext:)]) {
-    startWithInteractiveResponds = true;
-  } else {
-    return nil;
-  }
-
-  if (isInteractiveResponds && startWithInteractiveResponds) {
-    id<MDMInteractiveTransition> interactiveTransition = (id<MDMInteractiveTransition>)_transition;
-    isInteractive = [interactiveTransition isInteractive:_context];
-    if (isInteractive) {
-      [interactiveTransition startWithInteractiveContext:_context];
-    }
-  }
-
-  UIPercentDrivenInteractiveTransition *pdi = [_context getPercentIT];
-  // Setting the completion speed to a value close to 1.0 prevents
-  // the bar from sometimes jumping.
-  pdi.completionSpeed = 0.933;
-  return isInteractive == false ? nil : pdi;
 }
+
 @end

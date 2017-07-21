@@ -20,7 +20,6 @@
 
 @implementation MDMViewControllerTransitionContext {
   id<UIViewControllerContextTransitioning> _transitionContext;
-  UIPercentDrivenInteractiveTransition *_percent;
 }
 
 @synthesize direction = _direction;
@@ -29,6 +28,7 @@
 @synthesize foreViewController = _foreViewController;
 @synthesize presentationController = _presentationController;
 @synthesize wasCancelled = _wasCancelled;
+
 - (nonnull instancetype)initWithTransition:(nonnull id<MDMTransition>)transition
                                  direction:(MDMTransitionDirection)direction
                       sourceViewController:(nullable UIViewController *)sourceViewController
@@ -48,7 +48,6 @@
     if (!_transition) {
       return nil;
     }
-    _percent = [[UIPercentDrivenInteractiveTransition alloc] init];
   }
   return self;
 }
@@ -68,10 +67,6 @@
 
   [self initiateTransition];
 }
-
-// TODO(featherless): Implement interactive transitioning. Need to implement
-// UIViewControllerInteractiveTransitioning here and isInteractive and interactionController* in
-// MDMPresentationTransitionController.
 
 #pragma mark - MDMTransitionContext
 
@@ -180,22 +175,6 @@
     transition = fallback;
   }
   return transition;
-}
-
-- (UIPercentDrivenInteractiveTransition *_Nonnull)getPercentIT {
-  return _percent;
-}
-
-- (void)updatePercent:(CGFloat)percent {
-  [_percent updateInteractiveTransition:percent];
-}
-
-- (void)finishInteractiveTransition {
-  [_percent finishInteractiveTransition];
-}
-
-- (void)cancelInteractiveTransition {
-  [_percent cancelInteractiveTransition];
 }
 
 @end

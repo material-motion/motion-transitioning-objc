@@ -87,10 +87,3 @@ NS_SWIFT_NAME(TransitionContext)
 @property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
 @end
 
-NS_SWIFT_NAME(InteractiveTransitionContext)
-@protocol MDMInteractiveTransitionContext <MDMTransitionContext>
-- (UIPercentDrivenInteractiveTransition *_Nonnull)getPercentIT;
-- (void)updatePercent:(CGFloat)percent;
-- (void)finishInteractiveTransition;
-- (void)cancelInteractiveTransition;
-@end

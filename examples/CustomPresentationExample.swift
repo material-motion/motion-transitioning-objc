@@ -250,10 +250,37 @@ extension CustomPresentationExampleViewController {
   }
 }
 
+private final class DragToDismissInteractionController: NSObject, TransitionInteractionController {
+  let gestureRecognizer = UIPanGestureRecognizer()
+  let driver = UIPercentDrivenInteractiveTransition()
+  var associatedViewController: UIViewController?
+
+  override init() {
+    super.init()
+
+    self.gestureRecognizer.addTarget(self, action: #selector(didPan(_:)))
+  }
+
+  func interactionCoordinatorForTransition(with context: TransitionContext) -> UIViewControllerInteractiveTransitioning {
+    return driver
+  }
+
+  func didPan(_ gestureRecognizer: UIPanGestureRecognizer) {
+    switch gestureRecognizer.state {
+    case .began:
+      associatedViewController?.dismiss(animated: true)
+    default: break
+    }
+  }
+}
+
 extension CustomPresentationExampleViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let modal = ModalViewController()
     modal.transitionController.transition = transitions[indexPath.row].transition
+    let interactionController = DragToDismissInteractionController()
+    modal.view.addGestureRecognizer(interactionController.gestureRecognizer)
+    modal.transitionController.interactionController = interactionController
     showDetailViewController(modal, sender: self)
   }
 }

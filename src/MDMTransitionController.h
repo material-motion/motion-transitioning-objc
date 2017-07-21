@@ -17,7 +17,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol MDMTransition;
-@protocol MDMInteractiveTransition;
+@protocol MDMTransitionInteractionController;
 
 /**
  A transition controller is a bridge between UIKit's view controller transitioning APIs and
@@ -45,4 +45,10 @@ NS_SWIFT_NAME(TransitionController)
  This may be non-nil while a transition is active.
  */
 @property(nonatomic, strong, nullable, readonly) id<MDMTransition> activeTransition;
+
+/**
+ The interaction controller that will govern any interactions during the transition.
+ */
+@property(nonatomic, strong, nullable) id<MDMTransitionInteractionController> interactionController;
+
 @end
