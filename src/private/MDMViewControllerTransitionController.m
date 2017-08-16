@@ -27,7 +27,7 @@
   // a weak reference to the view controller here.
   __weak UIViewController *_associatedViewController;
 
-  UIPresentationController *_presentationController;
+  __weak UIPresentationController *_presentationController;
 
   MDMViewControllerTransitionContext *_context;
   __weak UIViewController *_source;
@@ -93,10 +93,14 @@
     return nil;
   }
   id<MDMTransitionWithPresentation> withPresentation = (id<MDMTransitionWithPresentation>)_transition;
-  _presentationController = [withPresentation presentationControllerForPresentedViewController:presented
-                                                                      presentingViewController:presenting
-                                                                          sourceViewController:source];
-  return _presentationController;
+  UIPresentationController *presentationController =
+      [withPresentation presentationControllerForPresentedViewController:presented
+                                                presentingViewController:presenting
+                                                    sourceViewController:source];
+  // _presentationController is weakly-held, so we have to do this local var dance to keep it
+  // from being nil'd on assignment.
+  _presentationController = presentationController;
+  return presentationController;
 }
 
 #pragma mark - MDMViewControllerTransitionContextDelegate
