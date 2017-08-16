@@ -19,7 +19,7 @@
 
 #import "MDMTransitionController.h"
 
-@interface MDMPresentationTransitionController : NSObject <MDMTransitionController, UIViewControllerTransitioningDelegate>
+@interface MDMViewControllerTransitionController : NSObject <MDMTransitionController, UIViewControllerTransitioningDelegate>
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController
     NS_DESIGNATED_INITIALIZER;

@@ -68,7 +68,7 @@ final class VerticalSheetTransition: NSObject, Transition {
 
   // When provided, the transition will use a presentation controller to customize the presentation
   // of the transition.
-  var calculateFrameOfPresentedViewInContainerView: CalculateFrame?
+  var calculateFrameOfPresentedViewInContainerView: TransitionFrameCalculation?
 
   func start(with context: TransitionContext) {
     CATransaction.begin()
@@ -122,103 +122,13 @@ extension VerticalSheetTransition: TransitionWithPresentation, TransitionWithFal
                               presenting: UIViewController,
                               source: UIViewController?) -> UIPresentationController? {
     if let calculateFrameOfPresentedViewInContainerView = calculateFrameOfPresentedViewInContainerView {
-      return DimmingPresentationController(presentedViewController: presented,
-                                           presenting: presenting,
-                                           calculateFrameOfPresentedViewInContainerView: calculateFrameOfPresentedViewInContainerView)
+      return TransitionPresentationController(presentedViewController: presented,
+                                              presenting: presenting,
+                                              calculateFrameOfPresentedView: calculateFrameOfPresentedViewInContainerView)
     }
     return nil
   }
 }
-
-// What follows is a fairly typical presentation controller implementation that adds a dimming view
-// and fades the dimming view in/out during the transition.
-//
-// Note that we've conformed to the Transition type: this allows the presentation controller to
-// add any custom animations during the transition. The presentation controller's `start` method
-// will be invoked before the Transition object's `start` method.
-
-final class DimmingPresentationController: UIPresentationController {
-
-  init(presentedViewController: UIViewController,
-              presenting presentingViewController: UIViewController,
-              calculateFrameOfPresentedViewInContainerView: @escaping CalculateFrame) {
-    let dimmingView = UIView()
-    dimmingView.backgroundColor = UIColor(white: 0, alpha: 0.3)
-    dimmingView.alpha = 0
-    dimmingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    self.dimmingView = dimmingView
-
-    self.calculateFrameOfPresentedViewInContainerView = calculateFrameOfPresentedViewInContainerView
-
-    super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
-  }
-
-  override var frameOfPresentedViewInContainerView: CGRect {
-    // We delegate out our frame calculation here:
-    return calculateFrameOfPresentedViewInContainerView(self)
-  }
-
-  override func presentationTransitionWillBegin() {
-    guard let containerView = containerView else { return }
-
-    dimmingView.frame = containerView.bounds
-    containerView.insertSubview(dimmingView, at: 0)
-
-    // This autoresizing mask assumes that the calculated frame is centered in the screen. This
-    // assumption won't hold true if the frame is aligned to a particular edge. We could improve
-    // this implementation by allowing the creator of the transition to customize the
-    // autoresizingMask in some manner.
-    presentedViewController.view.autoresizingMask = [.flexibleLeftMargin,
-                                                     .flexibleTopMargin,
-                                                     .flexibleRightMargin,
-                                                     .flexibleBottomMargin]
-  }
-
-  override func presentationTransitionDidEnd(_ completed: Bool) {
-    if !completed {
-      dimmingView.removeFromSuperview()
-    }
-  }
-
-  override func dismissalTransitionWillBegin() {
-    // We fall back to an alongside fade out when there is no active transition instance because
-    // our start implementation won't be invoked in this case.
-    if presentedViewController.transitionController.activeTransition == nil {
-      presentedViewController.transitionCoordinator?.animate(alongsideTransition: { context in
-        self.dimmingView.alpha = 0
-      })
-    }
-  }
-
-  override func dismissalTransitionDidEnd(_ completed: Bool) {
-    if completed {
-      dimmingView.removeFromSuperview()
-    } else {
-      dimmingView.alpha = 1
-    }
-  }
-
-  private let calculateFrameOfPresentedViewInContainerView: CalculateFrame
-  fileprivate let dimmingView: UIView
-}
-
-extension DimmingPresentationController: Transition {
-  func start(with context: TransitionContext) {
-    let fade = CABasicAnimation(keyPath: "opacity")
-    fade.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    fade.fromValue = 0
-    fade.toValue = 1
-    if context.direction == .backward {
-      let swap = fade.fromValue
-      fade.fromValue = fade.toValue
-      fade.toValue = swap
-    }
-    dimmingView.layer.add(fade, forKey: fade.keyPath)
-    dimmingView.layer.setValue(fade.toValue, forKeyPath: fade.keyPath!)
-  }
-}
-
-typealias CalculateFrame = (UIPresentationController) -> CGRect
 
 // MARK: Supplemental code
 
