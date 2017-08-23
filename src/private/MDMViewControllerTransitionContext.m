@@ -69,7 +69,7 @@
 
 // TODO(featherless): Implement interactive transitioning. Need to implement
 // UIViewControllerInteractiveTransitioning here and isInteractive and interactionController* in
-// MDMPresentationTransitionController.
+// MDMViewControllerTransitionController.
 
 #pragma mark - MDMTransitionContext
 

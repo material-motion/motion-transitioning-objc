@@ -14,15 +14,15 @@
  limitations under the License.
  */
 
-#import "MDMPresentationTransitionController.h"
+#import "MDMViewControllerTransitionController.h"
 
 #import "MDMTransition.h"
 #import "MDMViewControllerTransitionContext.h"
 
-@interface MDMPresentationTransitionController () <UIViewControllerTransitioningDelegate, MDMViewControllerTransitionContextDelegate>
+@interface MDMViewControllerTransitionController () <UIViewControllerTransitioningDelegate, MDMViewControllerTransitionContextDelegate>
 @end
 
-@implementation MDMPresentationTransitionController {
+@implementation MDMViewControllerTransitionController {
   // We expect the view controller to hold a strong reference to its transition controller, so keep
   // a weak reference to the view controller here.
   __weak UIViewController *_associatedViewController;
