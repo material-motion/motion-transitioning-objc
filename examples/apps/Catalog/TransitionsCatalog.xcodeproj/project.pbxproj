@@ -19,6 +19,7 @@
 		667A3F4C1DEE269400CB3A99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 667A3F4A1DEE269400CB3A99 /* LaunchScreen.storyboard */; };
 		667A3F541DEE273000CB3A99 /* TableOfContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A3F531DEE273000CB3A99 /* TableOfContents.swift */; };
 		668E28851F4F5389008A4550 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E28841F4F5389008A4550 /* FadeTransition.swift */; };
+		668E288B1F4F68D2008A4550 /* ContextualExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E288A1F4F68D2008A4550 /* ContextualExample.swift */; };
 		66A320FC1F1E716600E2EAC3 /* NavControllerFadeExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664CC3D91F1E6F3000B80804 /* NavControllerFadeExample.swift */; };
 		66BBC75E1ED37DAD0015CB9B /* FadeExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC75D1ED37DAD0015CB9B /* FadeExample.swift */; };
 		66BBC76D1ED4C8790015CB9B /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC7691ED4C8790015CB9B /* ExampleViewController.swift */; };
@@ -73,6 +74,7 @@
 		667A3F4D1DEE269400CB3A99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		667A3F531DEE273000CB3A99 /* TableOfContents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableOfContents.swift; sourceTree = "<group>"; };
 		668E28841F4F5389008A4550 /* FadeTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
+		668E288A1F4F68D2008A4550 /* ContextualExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextualExample.swift; sourceTree = "<group>"; };
 		66BBC75D1ED37DAD0015CB9B /* FadeExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FadeExample.swift; path = ../FadeExample.swift; sourceTree = "<group>"; };
 		66BBC7691ED4C8790015CB9B /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		66BBC76A1ED4C8790015CB9B /* ExampleViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViews.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 		666FAAA31D384B13000363DA /* examples */ = {
 			isa = PBXGroup;
 			children = (
+				668E28891F4F68C3008A4550 /* Contextual transition */,
 				668E28831F4F5371008A4550 /* Fade transition */,
 				668E28861F4F66C7008A4550 /* Custom presentation */,
 				072A063A1EEE26A900B9B5FC /* MenuExample.swift */,
@@ -236,6 +239,14 @@
 				6629151D1ED5E0E0002B9A5D /* CustomPresentationExample.swift */,
 			);
 			name = "Custom presentation";
+			sourceTree = "<group>";
+		};
+		668E28891F4F68C3008A4550 /* Contextual transition */ = {
+			isa = PBXGroup;
+			children = (
+				668E288A1F4F68D2008A4550 /* ContextualExample.swift */,
+			);
+			name = "Contextual transition";
 			sourceTree = "<group>";
 		};
 		66BBC7681ED4C8790015CB9B /* supplemental */ = {
@@ -504,6 +515,7 @@
 				66A320FC1F1E716600E2EAC3 /* NavControllerFadeExample.swift in Sources */,
 				66BBC7701ED4C8790015CB9B /* Layout.swift in Sources */,
 				6629151E1ED5E0E0002B9A5D /* CustomPresentationExample.swift in Sources */,
+				668E288B1F4F68D2008A4550 /* ContextualExample.swift in Sources */,
 				66BBC76E1ED4C8790015CB9B /* ExampleViews.swift in Sources */,
 				662915201ED5E137002B9A5D /* ModalViewController.swift in Sources */,
 				668E28851F4F5389008A4550 /* FadeTransition.swift in Sources */,

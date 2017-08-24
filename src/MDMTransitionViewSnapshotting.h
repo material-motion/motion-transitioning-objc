@@ -28,7 +28,7 @@ NS_SWIFT_NAME(TransitionViewSnapshotting)
 
  @param view The view to be snapshotted.
  @param isAppearing If the view is appearing for the first time, a slower form of snapshotting may
- be used. Otherwise, fast snapshotting may be used.
+                    be used. Otherwise, fast snapshotting may be used.
  @return A new UIView instance that can be used as a visual replica of the provided view.
  */
 - (nonnull UIView *)snapshotOfView:(nonnull UIView *)view isAppearing:(BOOL)isAppearing;

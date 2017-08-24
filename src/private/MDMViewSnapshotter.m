@@ -68,4 +68,16 @@ static UIView *SlowSnapshotOfView(UIView *view) {
   return snapshotView;
 }
 
+- (void)transitionDidEnd {
+  for (UIView *view in _snapshotViews) {
+    [view removeFromSuperview];
+  }
+  for (UIView *view in _hiddenViews) {
+    view.hidden = NO;
+  }
+
+  [_snapshotViews removeAllObjects];
+  [_hiddenViews removeAllObjects];
+}
+
 @end

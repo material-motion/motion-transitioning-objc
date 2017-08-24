@@ -87,6 +87,8 @@
   [_transitionContext completeTransition:true];
 
   _transition = nil;
+  [_viewSnapshotter transitionDidEnd];
+  _viewSnapshotter = nil;
 
   [_delegate transitionDidCompleteWithContext:self];
 }

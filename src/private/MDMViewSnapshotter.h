@@ -22,4 +22,6 @@
 
 - (instancetype)init NS_UNAVAILABLE;
 
+- (void)transitionDidEnd;
+
 @end
