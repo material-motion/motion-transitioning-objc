@@ -16,10 +16,12 @@
 
 #import "MDMViewControllerTransitionContext.h"
 
+#import "MDMViewSnapshotter.h"
 #import "MDMTransition.h"
 
 @implementation MDMViewControllerTransitionContext {
   id<UIViewControllerContextTransitioning> _transitionContext;
+  MDMViewSnapshotter *_viewSnapshotter;
 }
 
 @synthesize direction = _direction;
@@ -89,9 +91,15 @@
   [_delegate transitionDidCompleteWithContext:self];
 }
 
+- (id<MDMTransitionViewSnapshotting>)viewSnapshotter {
+  return _viewSnapshotter;
+}
+
 #pragma mark - Private
 
 - (void)initiateTransition {
+  _viewSnapshotter = [[MDMViewSnapshotter alloc] initWithContainerView:_transitionContext.containerView];
+
   UIViewController *from = [_transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
   if (from) {
     CGRect finalFrame = [_transitionContext finalFrameForViewController:from];

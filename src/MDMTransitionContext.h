@@ -16,6 +16,8 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol MDMTransitionViewSnapshotting;
+
 /**
  The possible directions of a transition.
  */
@@ -83,4 +85,14 @@ NS_SWIFT_NAME(TransitionContext)
  The presentation view controller for this transition.
  */
 @property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
+
+/**
+ The view snap shotter for this transition.
+
+ All snapshot views will be removed from the view hierarchy upon completion of the transition.
+
+ Views that have been snapshotted will be hidden until the completion of the transition.
+ */
+@property(nonatomic, strong, readonly, nonnull) id<MDMTransitionViewSnapshotting> viewSnapshotter;
+
 @end

@@ -14,10 +14,12 @@
  limitations under the License.
  */
 
-#import "MDMTransition.h"
-#import "MDMTransitionContext.h"
-#import "MDMTransitionController.h"
-#import "MDMTransitionNavigationControllerDelegate.h"
-#import "MDMTransitionPresentationController.h"
 #import "MDMTransitionViewSnapshotting.h"
-#import "UIViewController+TransitionController.h"
+
+@interface MDMViewSnapshotter : NSObject <MDMTransitionViewSnapshotting>
+
+- (instancetype)initWithContainerView:(UIView *)containerView NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)init NS_UNAVAILABLE;
+
+@end
