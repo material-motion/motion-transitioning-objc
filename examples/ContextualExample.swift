@@ -118,7 +118,7 @@ private class ContextualTransition: NSObject, Transition {
     shift.stiffness = 1000
     shift.mass = 3
     shift.duration = 0.5
-    shift.fromValue = contextView.layer.position
+    shift.fromValue = snapshotContextView.layer.position
     shift.toValue = CGPoint(x: context.foreViewController.view.bounds.midX,
                             y: context.foreViewController.view.bounds.midY)
     addAnimationToLayer(shift, snapshotContextView.layer)
