@@ -17,8 +17,8 @@
 import UIKit
 import MotionTransitioning
 
-// This example demonstrates the minimal path to building a custom transition using the Motion
-// Transitioning APIs in Swift. The essential steps have been documented below.
+// This example demonstrates the minimal path to using a custom transition in Swift. See
+// FadeTransition.swift for the custom transition implementation.
 
 class FadeExampleViewController: ExampleViewController {
 
@@ -57,43 +57,5 @@ class FadeExampleViewController: ExampleViewController {
   override func exampleInformation() -> ExampleInfo {
     return .init(title: type(of: self).catalogBreadcrumbs().last!,
                  instructions: "Tap to present a modal transition.")
-  }
-}
-
-// Transitions must be NSObject types that conform to the Transition protocol.
-private final class FadeTransition: NSObject, Transition {
-
-  // The sole method we're expected to implement, start is invoked each time the view controller is
-  // presented or dismissed.
-  func start(with context: TransitionContext) {
-    CATransaction.begin()
-
-    CATransaction.setCompletionBlock {
-      // Let UIKit know that the transition has come to an end.
-      context.transitionDidEnd()
-    }
-
-    let fade = CABasicAnimation(keyPath: "opacity")
-
-    fade.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-
-    // Define our animation assuming that we're going forward (presenting)...
-    fade.fromValue = 0
-    fade.toValue = 1
-
-    // ...and reverse it if we're going backwards (dismissing).
-    if context.direction == .backward {
-      let swap = fade.fromValue
-      fade.fromValue = fade.toValue
-      fade.toValue = swap
-    }
-
-    // Add the animation...
-    context.foreViewController.view.layer.add(fade, forKey: fade.keyPath)
-
-    // ...and ensure that our model layer reflects the final value.
-    context.foreViewController.view.layer.setValue(fade.toValue, forKeyPath: fade.keyPath!)
-
-    CATransaction.commit()
   }
 }

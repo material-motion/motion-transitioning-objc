@@ -25,6 +25,8 @@ class CustomPresentationExampleViewController: ExampleTableViewController {
   override init(style: UITableViewStyle) {
     super.init(style: style)
 
+    transitions = []
+
     // Aside: we're using a simple model pattern here to define the data for the different
     // transitions up separate from their presentation. Check out the `didSelectRowAt`
     // implementation to see how we're ultimately presenting the modal view controller.
