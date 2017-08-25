@@ -87,7 +87,7 @@ NS_SWIFT_NAME(TransitionContext)
 @property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
 
 /**
- The view snap shotter for this transition.
+ The view snapshotter for this transition.
 
  All snapshot views will be removed from the view hierarchy upon completion of the transition.
 
