@@ -87,6 +87,11 @@ private class ContextualTransition: NSObject, Transition {
       layer.setValue(animation.toValue, forKeyPath: animation.keyPath!)
     }
 
+    let snapshotter = TransitionViewSnapshotter(containerView: context.containerView)
+    context.defer {
+      snapshotter.transitionDidEnd()
+    }
+
     CATransaction.begin()
     CATransaction.setCompletionBlock {
       context.transitionDidEnd()
@@ -104,8 +109,8 @@ private class ContextualTransition: NSObject, Transition {
     //
     // The provided view snapshotter will automatically hide the snapshotted view and remove the
     // snapshot view upon completion of the transition.
-    let snapshotContextView = context.viewSnapshotter.snapshot(of: contextView,
-                                                               isAppearing: context.direction == .backward)
+    let snapshotContextView = snapshotter.snapshot(of: contextView,
+                                                   isAppearing: context.direction == .backward)
 
     let expand = CABasicAnimation(keyPath: "transform.scale.xy")
     expand.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)

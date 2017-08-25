@@ -19,5 +19,5 @@
 #import "MDMTransitionController.h"
 #import "MDMTransitionNavigationControllerDelegate.h"
 #import "MDMTransitionPresentationController.h"
-#import "MDMTransitionViewSnapshotting.h"
+#import "MDMTransitionViewSnapshotter.h"
 #import "UIViewController+TransitionController.h"

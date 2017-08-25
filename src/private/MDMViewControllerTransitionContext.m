@@ -16,12 +16,11 @@
 
 #import "MDMViewControllerTransitionContext.h"
 
-#import "MDMViewSnapshotter.h"
 #import "MDMTransition.h"
 
 @implementation MDMViewControllerTransitionContext {
   id<UIViewControllerContextTransitioning> _transitionContext;
-  MDMViewSnapshotter *_viewSnapshotter;
+  NSMutableArray *_completionBlocks;
 }
 
 @synthesize direction = _direction;
@@ -44,6 +43,8 @@
     _backViewController = backViewController;
     _foreViewController = foreViewController;
     _presentationController = presentationController;
+
+    _completionBlocks = [NSMutableArray array];
 
     _transition = [self fallbackForTransition:_transition];
     if (!_transition) {
@@ -87,21 +88,21 @@
   [_transitionContext completeTransition:true];
 
   _transition = nil;
-  [_viewSnapshotter transitionDidEnd];
-  _viewSnapshotter = nil;
+  for (void (^work)() in _completionBlocks) {
+    work();
+  }
+  [_completionBlocks removeAllObjects];
 
   [_delegate transitionDidCompleteWithContext:self];
 }
 
-- (id<MDMTransitionViewSnapshotting>)viewSnapshotter {
-  return _viewSnapshotter;
+- (void)deferToCompletion:(void (^)())work {
+  [_completionBlocks addObject:[work copy]];
 }
 
 #pragma mark - Private
 
 - (void)initiateTransition {
-  _viewSnapshotter = [[MDMViewSnapshotter alloc] initWithContainerView:_transitionContext.containerView];
-
   UIViewController *from = [_transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
   if (from) {
     CGRect finalFrame = [_transitionContext finalFrameForViewController:from];

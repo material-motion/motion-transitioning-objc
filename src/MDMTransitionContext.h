@@ -87,15 +87,8 @@ NS_SWIFT_NAME(TransitionContext)
 @property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
 
 /**
- The view snapshotter for this transition.
-
- All snapshot views will be removed from the view hierarchy upon completion of the transition.
-
- Views that have been snapshotted will be hidden until the completion of the transition.
-
- The returned view will be added to the containerView and positioned with its frame updated to match
- the visual position of the snapshotted view.
+ Defers execution of the provided work until the completion of the transition.
  */
-@property(nonatomic, strong, readonly, nonnull) id<MDMTransitionViewSnapshotting> viewSnapshotter;
+- (void)deferToCompletion:(void (^ _Nonnull)())work;
 
 @end
