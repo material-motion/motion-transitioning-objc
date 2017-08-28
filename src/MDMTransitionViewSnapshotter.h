@@ -38,6 +38,9 @@ NS_SWIFT_NAME(TransitionViewSnapshotter)
  */
 - (nonnull UIView *)snapshotOfView:(nonnull UIView *)view isAppearing:(BOOL)isAppearing;
 
-- (void)transitionDidEnd;
+/**
+ Removes all snapshots and unhides the snapshotted views.
+ */
+- (void)removeAllSnapshots;
 
 @end

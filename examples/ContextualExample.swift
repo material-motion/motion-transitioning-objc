@@ -89,7 +89,7 @@ private class ContextualTransition: NSObject, Transition {
 
     let snapshotter = TransitionViewSnapshotter(containerView: context.containerView)
     context.defer {
-      snapshotter.transitionDidEnd()
+      snapshotter.removeAllSnapshots()
     }
 
     CATransaction.begin()
