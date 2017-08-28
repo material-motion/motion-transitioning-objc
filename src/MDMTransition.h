@@ -50,7 +50,10 @@ NS_SWIFT_NAME(TransitionWithCustomDuration)
 @end
 
 /**
- A transition can return an alternative fallback transition instance.
+ A transition with a fallback can choose to return an alternative fallback transition instance.
+
+ This is most often used in cases where a transition has certain preconditions that aren't met, such
+ as requesting a context view where none is available.
  */
 NS_SWIFT_NAME(TransitionWithFallback)
 @protocol MDMTransitionWithFallback
@@ -58,17 +61,32 @@ NS_SWIFT_NAME(TransitionWithFallback)
 /**
  Asks the receiver to return a transition instance that should be used to drive this transition.
 
- If nil is returned, then the system transition will be used.
  If self is returned, then the receiver will be used.
- If a new instance is returned and the returned instance also conforms to this protocol, the
- returned instance will be queried for a fallback.
 
- Will be queried twice. The first time this method is invoked it's possible to return nil. Doing so
- will result in UIKit taking over the transition and a system transition being used. The second time
- this method is invoked, the custom transition will already be underway from UIKit's point of view
- and a nil return value will be treated equivalent to returning self.
+ If a new instance is returned and the returned instance also conforms to this protocol, the
+ returned instance will be queried for a fallback, otherwise the returned instance will be used.
  */
-- (nullable id<MDMTransition>)fallbackTransitionWithContext:(nonnull id<MDMTransitionContext>)context;
+- (nonnull id<MDMTransition>)fallbackTransitionWithContext:(nonnull id<MDMTransitionContext>)context;
+
+@end
+
+/**
+ A transition with feasibility can indicate whether it's capable of handling a given context.
+ */
+NS_SWIFT_NAME(TransitionWithFeasibility)
+@protocol MDMTransitionWithFeasibility
+
+/**
+ Asks the receiver whether it's capable of performing the transition with the given context.
+
+ If NO is returned, the receiver's startWithContext: will not be invoked.
+ If no transition is feasible, then a default UIKit transition will be performed instead.
+
+ If YES is returned, the receiver's startWithContext: will be invoked.
+
+ The context's containerView will be nil during this call.
+ */
+- (BOOL)canPerformTransitionWithContext:(nonnull id<MDMTransitionContext>)context;
 
 @end
 

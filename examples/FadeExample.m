@@ -27,10 +27,10 @@
 
   // The transition controller is an associated object on all UIViewController instances that
   // allows you to customize the way the view controller is presented. The primary API on the
-  // controller that you'll make use of is the `transition` property. Setting this property will
+  // controller that you'll make use of is the `transitions` property. Setting this property will
   // dictate how the view controller is presented. For this example we've built a custom
   // FadeTransition, so we'll make use of that now:
-  viewController.mdm_transitionController.transition = [[FadeTransition alloc] init];
+  viewController.mdm_transitionController.transitions = @[[[FadeTransition alloc] init]];
 
   // Note that once we assign the transition object to the view controller, the transition will
   // govern all subsequent presentations and dismissals of that view controller instance. If we
