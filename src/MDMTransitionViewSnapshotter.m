@@ -73,7 +73,7 @@ static UIView *SlowSnapshotOfView(UIView *view) {
   snapshotView.layer.shadowPath = view.layer.shadowPath;
   snapshotView.layer.shadowRadius = view.layer.shadowRadius;
 
-  snapshotView.layer.position = [_containerView convertPoint:view.layer.position fromView:view];
+  snapshotView.layer.position = [_containerView convertPoint:view.layer.position fromView:view.superview];
   snapshotView.layer.bounds = view.layer.bounds;
   snapshotView.layer.transform = view.layer.transform;
 

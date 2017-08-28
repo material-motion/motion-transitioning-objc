@@ -26,7 +26,7 @@ NS_SWIFT_NAME(TransitionViewSnapshotter)
 
 - (nonnull instancetype)initWithContainerView:(nonnull UIView *)containerView NS_DESIGNATED_INITIALIZER;
 
-- (nullable instancetype)init NS_UNAVAILABLE;
+- (nonnull instancetype)init NS_UNAVAILABLE;
 
 /**
  Returns a snapshot view of the provided view.
