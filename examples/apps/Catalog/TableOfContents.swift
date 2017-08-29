@@ -16,6 +16,10 @@
 
 // MARK: Catalog by convention
 
+extension ContextualExampleViewController {
+  class func catalogBreadcrumbs() -> [String] { return ["Contextual transition"] }
+}
+
 extension FadeExampleViewController {
   class func catalogBreadcrumbs() -> [String] { return ["Fade transition"] }
 }

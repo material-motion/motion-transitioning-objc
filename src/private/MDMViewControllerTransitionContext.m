@@ -20,6 +20,7 @@
 
 @implementation MDMViewControllerTransitionContext {
   id<UIViewControllerContextTransitioning> _transitionContext;
+  NSMutableArray *_completionBlocks;
 }
 
 @synthesize direction = _direction;
@@ -42,6 +43,8 @@
     _backViewController = backViewController;
     _foreViewController = foreViewController;
     _presentationController = presentationController;
+
+    _completionBlocks = [NSMutableArray array];
 
     _transition = [self fallbackForTransition:_transition];
     if (!_transition) {
@@ -85,8 +88,16 @@
   [_transitionContext completeTransition:true];
 
   _transition = nil;
+  for (void (^work)() in _completionBlocks) {
+    work();
+  }
+  [_completionBlocks removeAllObjects];
 
   [_delegate transitionDidCompleteWithContext:self];
+}
+
+- (void)deferToCompletion:(void (^)())work {
+  [_completionBlocks addObject:[work copy]];
 }
 
 #pragma mark - Private
