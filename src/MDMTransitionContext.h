@@ -88,6 +88,8 @@ NS_SWIFT_NAME(TransitionContext)
 
 /**
  Defers execution of the provided work until the completion of the transition.
+
+ Upon completion, each block of work will be executed in the order it was provided to the context.
  */
 - (void)deferToCompletion:(void (^ _Nonnull)())work;
 

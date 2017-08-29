@@ -24,12 +24,18 @@
 NS_SWIFT_NAME(TransitionViewSnapshotter)
 @interface MDMTransitionViewSnapshotter : NSObject
 
-- (nonnull instancetype)initWithContainerView:(nonnull UIView *)containerView NS_DESIGNATED_INITIALIZER;
+/**
+ Initializes a snapshotter with a given container view.
 
-- (nonnull instancetype)init NS_UNAVAILABLE;
+ All snapshot views will be added to the container view as a direct subview.
+ */
+- (nonnull instancetype)initWithContainerView:(nonnull UIView *)containerView NS_DESIGNATED_INITIALIZER;
 
 /**
  Returns a snapshot view of the provided view.
+
+ The snapshotter will keep a reference to the returned view in order to facilitate its eventual
+ removal via removeAllSnapshots once the snapshot is no longer needed.
 
  @param view The view to be snapshotted.
  @param isAppearing If the view is appearing for the first time, a slower form of snapshotting may
@@ -39,8 +45,13 @@ NS_SWIFT_NAME(TransitionViewSnapshotter)
 - (nonnull UIView *)snapshotOfView:(nonnull UIView *)view isAppearing:(BOOL)isAppearing;
 
 /**
- Removes all snapshots and unhides the snapshotted views.
+ Removes all snapshots from their superview and unhide the snapshotted views.
  */
 - (void)removeAllSnapshots;
+
+/**
+ Unavailable. Use initWithContainerView: instead.
+ */
+- (nonnull instancetype)init NS_UNAVAILABLE;
 
 @end
