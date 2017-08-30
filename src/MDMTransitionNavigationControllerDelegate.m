@@ -17,7 +17,7 @@
 #import "MDMTransitionNavigationControllerDelegate.h"
 
 #import "MDMTransitionContext.h"
-#import "private/MDMPresentationTransitionController.h"
+#import "private/MDMViewControllerTransitionController.h"
 #import "private/MDMViewControllerTransitionContext.h"
 
 @interface MDMTransitionNavigationControllerDelegate () <UINavigationControllerDelegate>

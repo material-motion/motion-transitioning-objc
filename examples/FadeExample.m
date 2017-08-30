@@ -18,19 +18,24 @@
 
 #import "TransitionsCatalog-Swift.h"
 
-// This example demonstrates the minimal path to building a custom transition using the Material
-// Motion Transitioning APIs in Objective-C. Please see the companion Swift implementation for
-// detailed comments.
-
-@interface FadeTransition : NSObject <MDMTransition>
-@end
+// This example demonstrates the minimal path to using a custom transition in Objective-C.
 
 @implementation FadeExampleObjcViewController
 
 - (void)didTap {
   ModalViewController *viewController = [[ModalViewController alloc] init];
 
+  // The transition controller is an associated object on all UIViewController instances that
+  // allows you to customize the way the view controller is presented. The primary API on the
+  // controller that you'll make use of is the `transition` property. Setting this property will
+  // dictate how the view controller is presented. For this example we've built a custom
+  // FadeTransition, so we'll make use of that now:
   viewController.mdm_transitionController.transition = [[FadeTransition alloc] init];
+
+  // Note that once we assign the transition object to the view controller, the transition will
+  // govern all subsequent presentations and dismissals of that view controller instance. If we
+  // want to use a different transition (e.g. to use an edge-swipe-to-dismiss transition) then we
+  // can simply change the transition object before initiating the transition.
 
   [self presentViewController:viewController animated:true completion:nil];
 }
@@ -54,39 +59,6 @@
 
 + (NSArray<NSString *> *)catalogBreadcrumbs {
   return @[ @"Fade transition (objc)" ];
-}
-
-@end
-
-@implementation FadeTransition
-
-- (NSTimeInterval)transitionDurationWithContext:(nonnull id<MDMTransitionContext>)context {
-  return 0.3;
-}
-
-- (void)startWithContext:(id<MDMTransitionContext>)context {
-  [CATransaction begin];
-  [CATransaction setCompletionBlock:^{
-    [context transitionDidEnd];
-  }];
-
-  CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
-
-  fade.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-
-  fade.fromValue = @0;
-  fade.toValue = @1;
-
-  if (context.direction == MDMTransitionDirectionBackward) {
-    id swap = fade.fromValue;
-    fade.fromValue = fade.toValue;
-    fade.toValue = swap;
-  }
-
-  [context.foreViewController.view.layer addAnimation:fade forKey:fade.keyPath];
-  [context.foreViewController.view.layer setValue:fade.toValue forKey:fade.keyPath];
-
-  [CATransaction commit];
 }
 
 @end

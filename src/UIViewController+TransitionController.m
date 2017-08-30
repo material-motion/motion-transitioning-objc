@@ -16,7 +16,7 @@
 
 #import "UIViewController+TransitionController.h"
 
-#import "private/MDMPresentationTransitionController.h"
+#import "private/MDMViewControllerTransitionController.h"
 
 #import <objc/runtime.h>
 
@@ -27,9 +27,9 @@
 - (id<MDMTransitionController>)mdm_transitionController {
   const void *key = [self mdm_transitionControllerKey];
 
-  MDMPresentationTransitionController *controller = objc_getAssociatedObject(self, key);
+  MDMViewControllerTransitionController *controller = objc_getAssociatedObject(self, key);
   if (!controller) {
-    controller = [[MDMPresentationTransitionController alloc] initWithViewController:self];
+    controller = [[MDMViewControllerTransitionController alloc] initWithViewController:self];
     [self mdm_setTransitionController:controller];
   }
   return controller;
@@ -37,11 +37,11 @@
 
 #pragma mark - Private
 
-- (void)mdm_setTransitionController:(MDMPresentationTransitionController *)controller {
+- (void)mdm_setTransitionController:(MDMViewControllerTransitionController *)controller {
   const void *key = [self mdm_transitionControllerKey];
 
   // Clear the previous delegate if we'd previously set one.
-  MDMPresentationTransitionController *existingController = objc_getAssociatedObject(self, key);
+  MDMViewControllerTransitionController *existingController = objc_getAssociatedObject(self, key);
   id<UIViewControllerTransitioningDelegate> delegate = self.transitioningDelegate;
   if (existingController == delegate) {
     self.transitioningDelegate = nil;
