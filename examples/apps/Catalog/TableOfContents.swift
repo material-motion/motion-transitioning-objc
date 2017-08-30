@@ -32,6 +32,10 @@ extension MenuExampleViewController {
   class func catalogBreadcrumbs() -> [String] { return ["Menu transition"] }
 }
 
+extension PhotoAlbumExampleViewController {
+  class func catalogBreadcrumbs() -> [String] { return ["Photo album transition"] }
+}
+
 extension CustomPresentationExampleViewController {
   class func catalogBreadcrumbs() -> [String] { return ["Custom presentation transitions"] }
 }
