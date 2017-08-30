@@ -1,7 +1,57 @@
-# #develop#
+# 3.2.0
 
- TODO: Enumerate changes.
+This minor release introduces new features for presentation, view snapshotting, and defered transition work. There is also a new photo album example demonstrating how to build a contextual transition in which the context may change.
 
+## New features
+
+Transition context now has a `deferToCompletion:` API for deferring work to the completion of the transition.
+
+```swift
+// Example (Swift):
+foreImageView.isHidden = true
+context.defer {
+  foreImageView.isHidden = false
+}
+```
+
+`MDMTransitionPresentationController` is a presentation controller that supports presenting view controllers at custom frames and showing an overlay scrim view.
+
+The new `MDMTransitionViewSnapshotter` class can be used to create and manage snapshot views during a transition.
+
+```swift
+let snapshotter = TransitionViewSnapshotter(containerView: context.containerView)
+context.defer {
+  snapshotter.removeAllSnapshots()
+}
+
+let snapshotView = snapshotter.snapshot(of: view, isAppearing: context.direction == .forward)
+```
+
+## Source changes
+
+* [Add a snapshotting API and contextual transition example (#37)](https://github.com/material-motion/transitioning-objc/commit/a6ae314ddd5ff4e6f0ca9a8711348f8682d95e66) (featherless)
+* [Store the presentation controller as a weak reference. (#34)](https://github.com/material-motion/transitioning-objc/commit/9f73e70e382ef8291f3ad85f7ccac25994f06e43) (featherless)
+* [Add a stock presentation controller implementation. (#35)](https://github.com/material-motion/transitioning-objc/commit/6c98fa24f7e733262dc802b1e7c6b30134a29936) (featherless)
+* [Minor formatting adjustment.](https://github.com/material-motion/transitioning-objc/commit/28f6e2e72534c8e0e77b60a98140be3bc06cd37a) (Jeff Verkoeyen)
+
+## API changes
+
+## MDMTransitionContext
+
+*new* method: `deferToCompletion:`. Defers execution of the provided work until the completion of the transition.
+
+## MDMTransitionPresentationController
+
+*new* class: `MDMTransitionPresentationController`. A transition presentation controller implementation that supports animation delegation, a darkened overlay view, and custom presentation frames.
+
+## MDMTransitionViewSnapshotter
+
+*new* class: `MDMTransitionViewSnapshotter`. A view snapshotter creates visual replicas of views so that they may be animated during a transition without adversely affecting the original view hierarchy.
+
+## Non-source changes
+
+* [Add photo album example. (#38)](https://github.com/material-motion/transitioning-objc/commit/a1d49a6f432b7fddf8d15c90a5ea185fd8e03c5a) (featherless)
+* [Add some organization to the transition examples. (#36)](https://github.com/material-motion/transitioning-objc/commit/27756b1e578cb8be3fa6d727a3aefafe9b1aa496) (featherless)
 
 # 3.1.0
 
