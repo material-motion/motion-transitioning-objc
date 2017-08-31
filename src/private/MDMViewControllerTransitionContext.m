@@ -96,7 +96,7 @@
   [_delegate transitionDidCompleteWithContext:self];
 }
 
-- (void)deferToCompletion:(void (^)())work {
+- (void)deferToCompletion:(void (^)(void))work {
   [_completionBlocks addObject:[work copy]];
 }
 

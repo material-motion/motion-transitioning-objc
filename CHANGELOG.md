@@ -1,3 +1,11 @@
+# 3.2.1
+
+This patch release resolves Xcode 9 compiler warnings.
+
+## Source changes
+
+* [Explicitly include void for block parameters. (#41)](https://github.com/material-motion/transitioning-objc/commit/eabe53db2a113e548c876247e2c2ff3e04afc58f) (ianegordon)
+
 # 3.2.0
 
 This minor release introduces new features for presentation, view snapshotting, and defered transition work. There is also a new photo album example demonstrating how to build a contextual transition in which the context may change.

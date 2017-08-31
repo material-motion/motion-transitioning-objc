@@ -91,6 +91,6 @@ NS_SWIFT_NAME(TransitionContext)
 
  Upon completion, each block of work will be executed in the order it was provided to the context.
  */
-- (void)deferToCompletion:(void (^ _Nonnull)())work;
+- (void)deferToCompletion:(void (^ _Nonnull)(void))work;
 
 @end
