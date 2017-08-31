@@ -1,3 +1,8 @@
+# #develop#
+
+ TODO: Enumerate changes.
+
+
 # 3.2.0
 
 This minor release introduces new features for presentation, view snapshotting, and defered transition work. There is also a new photo album example demonstrating how to build a contextual transition in which the context may change.
