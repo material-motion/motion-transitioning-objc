@@ -1,7 +1,10 @@
-# #develop#
+# 3.2.1
 
- TODO: Enumerate changes.
+This patch release resolves Xcode 9 compiler warnings.
 
+## Source changes
+
+* [Explicitly include void for block parameters. (#41)](https://github.com/material-motion/transitioning-objc/commit/eabe53db2a113e548c876247e2c2ff3e04afc58f) (ianegordon)
 
 # 3.2.0
 
