@@ -16,8 +16,6 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol MDMTransitionViewSnapshotting;
-
 /**
  The possible directions of a transition.
  */
