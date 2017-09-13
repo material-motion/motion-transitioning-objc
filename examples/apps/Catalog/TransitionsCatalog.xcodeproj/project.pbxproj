@@ -24,7 +24,7 @@
 		668E28901F50673A008A4550 /* PhotoAlbum.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 668E288F1F50673A008A4550 /* PhotoAlbum.xcassets */; };
 		668E28971F571CA4008A4550 /* SlideUpTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E28961F571CA4008A4550 /* SlideUpTransition.swift */; };
 		668E28991F5729C1008A4550 /* TransitionTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E28981F5729C1008A4550 /* TransitionTarget.swift */; };
-		668E289B1F572A9D008A4550 /* ContextualImageTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E289A1F572A9D008A4550 /* ContextualImageTransition.swift */; };
+		668E289B1F572A9D008A4550 /* SpringFrameTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E289A1F572A9D008A4550 /* SpringFrameTransition.swift */; };
 		66A320FC1F1E716600E2EAC3 /* NavControllerFadeExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664CC3D91F1E6F3000B80804 /* NavControllerFadeExample.swift */; };
 		66BBC75E1ED37DAD0015CB9B /* FadeExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC75D1ED37DAD0015CB9B /* FadeExample.swift */; };
 		66BBC76D1ED4C8790015CB9B /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC7691ED4C8790015CB9B /* ExampleViewController.swift */; };
@@ -84,7 +84,7 @@
 		668E288F1F50673A008A4550 /* PhotoAlbum.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = PhotoAlbum.xcassets; sourceTree = "<group>"; };
 		668E28961F571CA4008A4550 /* SlideUpTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SlideUpTransition.swift; path = transitions/SlideUpTransition.swift; sourceTree = "<group>"; };
 		668E28981F5729C1008A4550 /* TransitionTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionTarget.swift; sourceTree = "<group>"; };
-		668E289A1F572A9D008A4550 /* ContextualImageTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContextualImageTransition.swift; path = transitions/ContextualImageTransition.swift; sourceTree = "<group>"; };
+		668E289A1F572A9D008A4550 /* SpringFrameTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpringFrameTransition.swift; path = transitions/SpringFrameTransition.swift; sourceTree = "<group>"; };
 		66BBC75D1ED37DAD0015CB9B /* FadeExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FadeExample.swift; path = ../FadeExample.swift; sourceTree = "<group>"; };
 		66BBC7691ED4C8790015CB9B /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		66BBC76A1ED4C8790015CB9B /* ExampleViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViews.swift; sourceTree = "<group>"; };
@@ -272,7 +272,7 @@
 		668E28951F571C8F008A4550 /* Transitions */ = {
 			isa = PBXGroup;
 			children = (
-				668E289A1F572A9D008A4550 /* ContextualImageTransition.swift */,
+				668E289A1F572A9D008A4550 /* SpringFrameTransition.swift */,
 				668E28841F4F5389008A4550 /* FadeTransition.swift */,
 				668E28961F571CA4008A4550 /* SlideUpTransition.swift */,
 				668E28981F5729C1008A4550 /* TransitionTarget.swift */,
@@ -549,7 +549,7 @@
 				66A320FC1F1E716600E2EAC3 /* NavControllerFadeExample.swift in Sources */,
 				668E288E1F5066AA008A4550 /* PhotoAlbumExample.swift in Sources */,
 				66BBC7701ED4C8790015CB9B /* Layout.swift in Sources */,
-				668E289B1F572A9D008A4550 /* ContextualImageTransition.swift in Sources */,
+				668E289B1F572A9D008A4550 /* SpringFrameTransition.swift in Sources */,
 				6629151E1ED5E0E0002B9A5D /* CustomPresentationExample.swift in Sources */,
 				668E288B1F4F68D2008A4550 /* ContextualExample.swift in Sources */,
 				66BBC76E1ED4C8790015CB9B /* ExampleViews.swift in Sources */,

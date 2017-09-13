@@ -205,8 +205,8 @@ final class PhotoAlbumTransition: NSObject, Transition, TransitionWithFeasibilit
                                                    isAppearing: context.direction == .backward)
 
     context.compose(with: FadeTransition(target: .foreView, style: .fadeIn))
-    context.compose(with: ContextualImageTransition(target: .target(snapshotContextView),
-                                                    size: fitSize))
+    context.compose(with: SpringFrameTransition(target: .target(snapshotContextView),
+                                                size: fitSize))
 
     if let photoAlbumViewController = context.foreViewController as? PhotoAlbumViewController {
       context.compose(with: SlideUpTransition(target: .target(photoAlbumViewController.toolbar)))

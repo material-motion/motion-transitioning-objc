@@ -30,7 +30,7 @@ func addAnimationToLayer(animation: CABasicAnimation, layer: CALayer, direction:
   layer.setValue(animation.toValue, forKeyPath: animation.keyPath!)
 }
 
-final class ContextualImageTransition: NSObject, Transition {
+final class SpringFrameTransition: NSObject, Transition {
 
   let target: TransitionTarget
   let size: CGSize
