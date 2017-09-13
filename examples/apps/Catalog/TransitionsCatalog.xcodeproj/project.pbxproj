@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		072A063B1EEE26A900B9B5FC /* MenuExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072A063A1EEE26A900B9B5FC /* MenuExample.swift */; };
+		661F92EC1F69C79900AA259E /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F92EB1F69C79900AA259E /* Photo.swift */; };
+		661F92EE1F69C7CA00AA259E /* PhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F92ED1F69C7CA00AA259E /* PhotoAlbum.swift */; };
+		661F92F11F69C7E900AA259E /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F92F01F69C7E900AA259E /* PhotoCollectionViewCell.swift */; };
+		661F92F31F69C80E00AA259E /* PhotoAlbumTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F92F21F69C80E00AA259E /* PhotoAlbumTransition.swift */; };
 		6629151E1ED5E0E0002B9A5D /* CustomPresentationExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629151D1ED5E0E0002B9A5D /* CustomPresentationExample.swift */; };
 		662915201ED5E137002B9A5D /* ModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629151F1ED5E137002B9A5D /* ModalViewController.swift */; };
 		662915231ED64A10002B9A5D /* TransitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662915221ED64A10002B9A5D /* TransitionTests.swift */; };
@@ -60,6 +64,10 @@
 		2408A4B72C0BA93CC963452F /* Pods_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3734DFFD1C84494E48784617 /* Pods-TransitionsCatalog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TransitionsCatalog.release.xcconfig"; path = "../../../Pods/Target Support Files/Pods-TransitionsCatalog/Pods-TransitionsCatalog.release.xcconfig"; sourceTree = "<group>"; };
 		56D9DF9E44D993D12FE85E99 /* Pods_TransitionsCatalog.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TransitionsCatalog.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		661F92EB1F69C79900AA259E /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Photo.swift; path = supplemental/Photo.swift; sourceTree = "<group>"; };
+		661F92ED1F69C7CA00AA259E /* PhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotoAlbum.swift; path = supplemental/PhotoAlbum.swift; sourceTree = "<group>"; };
+		661F92F01F69C7E900AA259E /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		661F92F21F69C80E00AA259E /* PhotoAlbumTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumTransition.swift; sourceTree = "<group>"; };
 		6629151D1ED5E0E0002B9A5D /* CustomPresentationExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPresentationExample.swift; sourceTree = "<group>"; };
 		6629151F1ED5E137002B9A5D /* ModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalViewController.swift; sourceTree = "<group>"; };
 		662915211ED5F222002B9A5D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../../README.md; sourceTree = "<group>"; };
@@ -131,6 +139,23 @@
 				2408A4B72C0BA93CC963452F /* Pods_UnitTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		661F92EA1F69C78600AA259E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				661F92EB1F69C79900AA259E /* Photo.swift */,
+				661F92ED1F69C7CA00AA259E /* PhotoAlbum.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		661F92EF1F69C7E000AA259E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				661F92F01F69C7E900AA259E /* PhotoCollectionViewCell.swift */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 		666FAA771D384A6B000363DA = {
@@ -264,7 +289,10 @@
 		668E288C1F506698008A4550 /* Photo album */ = {
 			isa = PBXGroup;
 			children = (
+				661F92EF1F69C7E000AA259E /* Cells */,
+				661F92EA1F69C78600AA259E /* Model */,
 				668E288D1F5066AA008A4550 /* PhotoAlbumExample.swift */,
+				661F92F21F69C80E00AA259E /* PhotoAlbumTransition.swift */,
 			);
 			name = "Photo album";
 			sourceTree = "<group>";
@@ -544,12 +572,16 @@
 				668E28971F571CA4008A4550 /* SlideUpTransition.swift in Sources */,
 				66BBC7751ED729A80015CB9B /* FadeExample.m in Sources */,
 				072A063B1EEE26A900B9B5FC /* MenuExample.swift in Sources */,
+				661F92EE1F69C7CA00AA259E /* PhotoAlbum.swift in Sources */,
 				66BBC76D1ED4C8790015CB9B /* ExampleViewController.swift in Sources */,
 				667A3F541DEE273000CB3A99 /* TableOfContents.swift in Sources */,
 				66A320FC1F1E716600E2EAC3 /* NavControllerFadeExample.swift in Sources */,
 				668E288E1F5066AA008A4550 /* PhotoAlbumExample.swift in Sources */,
+				661F92F11F69C7E900AA259E /* PhotoCollectionViewCell.swift in Sources */,
 				66BBC7701ED4C8790015CB9B /* Layout.swift in Sources */,
 				668E289B1F572A9D008A4550 /* SpringFrameTransition.swift in Sources */,
+				661F92F31F69C80E00AA259E /* PhotoAlbumTransition.swift in Sources */,
+				661F92EC1F69C79900AA259E /* Photo.swift in Sources */,
 				6629151E1ED5E0E0002B9A5D /* CustomPresentationExample.swift in Sources */,
 				668E288B1F4F68D2008A4550 /* ContextualExample.swift in Sources */,
 				66BBC76E1ED4C8790015CB9B /* ExampleViews.swift in Sources */,
