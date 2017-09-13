@@ -83,11 +83,7 @@ final class ContextualImageTransition: NSObject, Transition, TransitionWithFeasi
       context.transitionDidEnd()
     }
 
-    let fadeIn = CABasicAnimation(keyPath: "opacity")
-    fadeIn.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    fadeIn.fromValue = 0
-    fadeIn.toValue = 1
-    addAnimationToLayer(fadeIn, context.foreViewController.view.layer)
+    context.compose(with: FadeTransition(target: .foreView, style: .fadeIn))
 
     let snapshotContextView = snapshotter.snapshot(of: contextView,
                                                    isAppearing: context.direction == .backward)
