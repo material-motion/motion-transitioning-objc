@@ -136,7 +136,7 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, Contex
     present(viewController, animated: true)
   }
 
-  func backContextView(for transition: ContextualImageTransition,
+  func backContextView(for transition: PhotoAlbumTransition,
                        with foreViewController: UIViewController) -> UIImageView? {
     let currentPhoto = (foreViewController as! PhotoAlbumViewController).currentPhoto
     guard let photoIndex = album.identifierToIndex[currentPhoto.uuid] else {
@@ -154,20 +154,59 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, Contex
   }
 }
 
+protocol ContextualImageTransitionForeDelegate {
+  func foreContextView(for transition: PhotoAlbumTransition) -> UIImageView?
+}
+
+protocol ContextualImageTransitionBackDelegate {
+  func backContextView(for transition: PhotoAlbumTransition,
+                       with foreViewController: UIViewController) -> UIImageView?
+}
+
 final class PhotoAlbumTransition: NSObject, Transition, TransitionWithFeasibility {
-  let contextualTransition: ContextualImageTransition
+  let backDelegate: ContextualImageTransitionBackDelegate
+  let foreDelegate: ContextualImageTransitionForeDelegate
   init(backDelegate: ContextualImageTransitionBackDelegate,
        foreDelegate: ContextualImageTransitionForeDelegate) {
-    self.contextualTransition = ContextualImageTransition(backDelegate: backDelegate,
-                                                          foreDelegate: foreDelegate)
+    self.backDelegate = backDelegate
+    self.foreDelegate = foreDelegate
   }
 
   func canPerformTransition(with context: TransitionContext) -> Bool {
-    return contextualTransition.canPerformTransition(with: context)
+    return backDelegate.backContextView(for: self, with: context.foreViewController) != nil
   }
 
   func start(with context: TransitionContext) {
-    context.compose(with: contextualTransition)
+    guard let contextView = backDelegate.backContextView(for: self,
+                                                         with: context.foreViewController) else {
+                                                          return
+    }
+    guard let foreImageView = foreDelegate.foreContextView(for: self) else {
+      return
+    }
+
+    let snapshotter = TransitionViewSnapshotter(containerView: context.containerView)
+    context.defer {
+      snapshotter.removeAllSnapshots()
+    }
+
+    foreImageView.isHidden = true
+    context.defer {
+      foreImageView.isHidden = false
+    }
+
+    let imageSize = foreImageView.image!.size
+
+    let fitScale = min(foreImageView.bounds.width / imageSize.width,
+                       foreImageView.bounds.height / imageSize.height)
+    let fitSize = CGSize(width: fitScale * imageSize.width, height: fitScale * imageSize.height)
+
+    let snapshotContextView = snapshotter.snapshot(of: contextView,
+                                                   isAppearing: context.direction == .backward)
+
+    context.compose(with: FadeTransition(target: .foreView, style: .fadeIn))
+    context.compose(with: ContextualImageTransition(target: .target(snapshotContextView),
+                                                    size: fitSize))
 
     if let photoAlbumViewController = context.foreViewController as? PhotoAlbumViewController {
       context.compose(with: SlideUpTransition(target: .target(photoAlbumViewController.toolbar)))
@@ -255,7 +294,7 @@ private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSo
 
   // MARK: ContextualImageTransitionForeDelegate
 
-  func foreContextView(for transition: ContextualImageTransition) -> UIImageView? {
+  func foreContextView(for transition: PhotoAlbumTransition) -> UIImageView? {
     return (collectionView.cellForItem(at: indexPathForCurrentPhoto()) as! PhotoCollectionViewCell).imageView
   }
 

@@ -17,95 +17,56 @@
 import UIKit
 import MotionTransitioning
 
-protocol ContextualImageTransitionForeDelegate {
-  func foreContextView(for transition: ContextualImageTransition) -> UIImageView?
-}
-
-protocol ContextualImageTransitionBackDelegate {
-  func backContextView(for transition: ContextualImageTransition,
-                       with foreViewController: UIViewController) -> UIImageView?
-}
-
-final class ContextualImageTransition: NSObject, Transition, TransitionWithFeasibility {
-
-  let backDelegate: ContextualImageTransitionBackDelegate
-  let foreDelegate: ContextualImageTransitionForeDelegate
-  init(backDelegate: ContextualImageTransitionBackDelegate,
-       foreDelegate: ContextualImageTransitionForeDelegate) {
-    self.backDelegate = backDelegate
-    self.foreDelegate = foreDelegate
+// A small helper function for creating bi-directional animations.
+// See https://github.com/material-motion/motion-animator-objc for a more versatile
+// bidirectional Core Animation implementation.
+func addAnimationToLayer(animation: CABasicAnimation, layer: CALayer, direction: TransitionDirection) {
+  if direction == .backward {
+    let swap = animation.fromValue
+    animation.fromValue = animation.toValue
+    animation.toValue = swap
   }
+  layer.add(animation, forKey: animation.keyPath)
+  layer.setValue(animation.toValue, forKeyPath: animation.keyPath!)
+}
 
-  func canPerformTransition(with context: TransitionContext) -> Bool {
-    return backDelegate.backContextView(for: self, with: context.foreViewController) != nil
+final class ContextualImageTransition: NSObject, Transition {
+
+  let target: TransitionTarget
+  let size: CGSize
+  init(target: TransitionTarget, size: CGSize) {
+    self.target = target
+    self.size = size
+
+    super.init()
   }
 
   func start(with context: TransitionContext) {
-    guard let contextView = backDelegate.backContextView(for: self,
-                                                         with: context.foreViewController) else {
-      return
-    }
-    guard let foreImageView = foreDelegate.foreContextView(for: self) else {
-      return
-    }
-
-    // A small helper function for creating bi-directional animations.
-    // See https://github.com/material-motion/motion-animator-objc for a more versatile
-    // bidirectional Core Animation implementation.
-    let addAnimationToLayer: (CABasicAnimation, CALayer) -> Void = { animation, layer in
-      if context.direction == .backward {
-        let swap = animation.fromValue
-        animation.fromValue = animation.toValue
-        animation.toValue = swap
-      }
-      layer.add(animation, forKey: animation.keyPath)
-      layer.setValue(animation.toValue, forKeyPath: animation.keyPath!)
-    }
-
-    let snapshotter = TransitionViewSnapshotter(containerView: context.containerView)
-    context.defer {
-      snapshotter.removeAllSnapshots()
-    }
-
-    let imageSize = foreImageView.image!.size
-
-    let fitScale = min(foreImageView.bounds.width / imageSize.width,
-                       foreImageView.bounds.height / imageSize.height)
-    let fitSize = CGSize(width: fitScale * imageSize.width, height: fitScale * imageSize.height)
-
-    foreImageView.isHidden = true
-    context.defer {
-      foreImageView.isHidden = false
-    }
+    let contextView = target.resolve(with: context)
 
     CATransaction.begin()
     CATransaction.setCompletionBlock {
       context.transitionDidEnd()
     }
 
-    context.compose(with: FadeTransition(target: .foreView, style: .fadeIn))
-
-    let snapshotContextView = snapshotter.snapshot(of: contextView,
-                                                   isAppearing: context.direction == .backward)
-
     let shift = CASpringAnimation(keyPath: "position")
     shift.damping = 500
     shift.stiffness = 1000
     shift.mass = 3
     shift.duration = 0.5
-    shift.fromValue = snapshotContextView.layer.position
+    shift.fromValue = contextView.layer.position
     shift.toValue = CGPoint(x: context.foreViewController.view.bounds.midX,
                             y: context.foreViewController.view.bounds.midY)
-    addAnimationToLayer(shift, snapshotContextView.layer)
+    addAnimationToLayer(animation: shift, layer: contextView.layer, direction: context.direction)
 
     let expansion = CASpringAnimation(keyPath: "bounds.size")
     expansion.damping = 500
     expansion.stiffness = 1000
     expansion.mass = 3
     expansion.duration = 0.5
-    expansion.fromValue = snapshotContextView.layer.bounds.size
-    expansion.toValue = fitSize
-    addAnimationToLayer(expansion, snapshotContextView.layer)
+    expansion.fromValue = contextView.layer.bounds.size
+    expansion.toValue = size
+    addAnimationToLayer(animation: expansion, layer: contextView.layer, direction: context.direction)
 
     CATransaction.commit()
   }
