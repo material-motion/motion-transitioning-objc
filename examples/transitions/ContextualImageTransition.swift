@@ -110,7 +110,7 @@ final class ContextualImageTransition: NSObject, Transition, TransitionWithFeasi
     expansion.fromValue = snapshotContextView.layer.bounds.size
     expansion.toValue = fitSize
     addAnimationToLayer(expansion, snapshotContextView.layer)
-    
+
     CATransaction.commit()
   }
 }

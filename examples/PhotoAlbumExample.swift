@@ -131,8 +131,7 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, Contex
     let viewController = PhotoAlbumViewController(album: album)
     viewController.currentPhoto = album.photos[indexPath.row]
     viewController.transitionController.transitions = [
-      ContextualImageTransition(backDelegate: self, foreDelegate: viewController),
-      SlideUpTransition(target: .target(viewController.toolbar))
+      PhotoAlbumTransition(backDelegate: self, foreDelegate: viewController),
     ]
     present(viewController, animated: true)
   }
@@ -152,6 +151,31 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, Contex
       return nil
     }
     return cell.imageView
+  }
+}
+
+final class PhotoAlbumTransition: NSObject, Transition, TransitionWithFeasibility {
+  let contextualTransition: ContextualImageTransition
+  init(backDelegate: ContextualImageTransitionBackDelegate,
+       foreDelegate: ContextualImageTransitionForeDelegate) {
+    self.contextualTransition = ContextualImageTransition(backDelegate: backDelegate,
+                                                          foreDelegate: foreDelegate)
+  }
+
+  func canPerformTransition(with context: TransitionContext) -> Bool {
+    return contextualTransition.canPerformTransition(with: context)
+  }
+
+  func start(with context: TransitionContext) {
+    context.compose(with: contextualTransition)
+
+    if let photoAlbumViewController = context.foreViewController as? PhotoAlbumViewController {
+      context.compose(with: SlideUpTransition(target: .target(photoAlbumViewController.toolbar)))
+    }
+
+    // This transition doesn't directly produce any animations, so we inform the context that it is
+    // complete here, otherwise the transition would never complete:
+    context.transitionDidEnd()
   }
 }
 

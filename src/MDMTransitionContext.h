@@ -16,6 +16,8 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol MDMTransition;
+
 /**
  The possible directions of a transition.
  */
@@ -82,6 +84,13 @@ NS_SWIFT_NAME(TransitionContext)
  The presentation view controller for this transition.
  */
 @property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
+
+/**
+ Defers execution of the provided work until the completion of the transition.
+
+ Upon completion, each block of work will be executed in the order it was provided to the context.
+ */
+- (void)composeWithTransition:(nonnull id<MDMTransition>)transition;
 
 /**
  Defers execution of the provided work until the completion of the transition.

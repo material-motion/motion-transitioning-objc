@@ -28,6 +28,7 @@
 @end
 
 @implementation MDMViewControllerTransitionContext {
+  NSInteger _numberOfActiveTransitions;
   NSMutableArray *_sharedCompletionBlocks;
   __weak id<MDMViewControllerTransitionContextDelegate> _delegate;
 }
@@ -57,8 +58,14 @@
     _presentationController = presentationController;
     _sharedCompletionBlocks = sharedCompletionBlocks;
     _delegate = delegate;
+    _numberOfActiveTransitions = 1;
   }
   return self;
+}
+
+- (void)composeWithTransition:(id<MDMTransition>)transition {
+  _numberOfActiveTransitions++;
+  [transition startWithContext:self];
 }
 
 - (UIView *)containerView {
@@ -70,7 +77,12 @@
 }
 
 - (void)transitionDidEnd {
-  [_delegate transitionContextDidEnd:self];
+  if (_numberOfActiveTransitions > 0) {
+    _numberOfActiveTransitions--;
+  }
+  if (_numberOfActiveTransitions == 0) {
+    [_delegate transitionContextDidEnd:self];
+  }
 }
 
 @end
