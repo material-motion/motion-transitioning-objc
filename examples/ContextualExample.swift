@@ -125,11 +125,8 @@ private class ContextualTransition: NSObject, Transition {
                             y: context.foreViewController.view.bounds.midY)
     addAnimationToLayer(shift, snapshotContextView.layer)
 
-    let fadeOut = CABasicAnimation(keyPath: "opacity")
-    fadeOut.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    fadeOut.fromValue = 1
-    fadeOut.toValue = 0
-    addAnimationToLayer(fadeOut, snapshotContextView.layer)
+    context.compose(with: FadeTransition(target: .target(snapshotContextView),
+                                         style: .fadeOut))
 
     CATransaction.commit()
   }
