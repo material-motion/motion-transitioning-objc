@@ -19,66 +19,9 @@ import MotionTransitioning
 
 // This example demonstrates how to build a photo album contextual transition.
 
-let numberOfImageAssets = 10
-let numberOfPhotosInAlbum = 30
-
-struct Photo {
-  let name: String
-  let image: UIImage
-  let uuid: String
-
-  fileprivate init(name: String) {
-    self.uuid = NSUUID().uuidString
-    self.name = name
-
-    // NOTE: In a real app you should never load images from disk on the UI thread like this.
-    // Instead, you should find some way to cache the thumbnails in memory and then asynchronously
-    // load the full-size photos from disk/network when needed. The photo library APIs provide
-    // exactly this sort of behavior (square thumbnails are accessible immediately on the UI thread
-    // while the full-sized photos need to be loaded asynchronously).
-    self.image = UIImage(named: "\(self.name).jpg")!
-  }
-}
-
-class PhotoAlbum {
-  let photos: [Photo]
-  let identifierToIndex: [String: Int]
-
-  init() {
-    var photos: [Photo] = []
-    var identifierToIndex: [String: Int] = [:]
-    for index in 0..<numberOfPhotosInAlbum {
-      let photo = Photo(name: "image\(index % numberOfImageAssets)")
-      photos.append(photo)
-      identifierToIndex[photo.uuid] = index
-    }
-    self.photos = photos
-    self.identifierToIndex = identifierToIndex
-  }
-}
-
 private let photoCellIdentifier = "photoCell"
 
-private class PhotoCollectionViewCell: UICollectionViewCell {
-  let imageView = UIImageView()
-
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-
-    imageView.contentMode = .scaleAspectFill
-    imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    imageView.frame = bounds
-    imageView.clipsToBounds = true
-
-    contentView.addSubview(imageView)
-  }
-
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-}
-
-public class PhotoAlbumExampleViewController: UICollectionViewController, ContextualImageTransitionBackDelegate {
+public class PhotoAlbumExampleViewController: UICollectionViewController, PhotoAlbumTransitionBackDelegate {
 
   let album = PhotoAlbum()
 
@@ -130,14 +73,12 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, Contex
   public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let viewController = PhotoAlbumViewController(album: album)
     viewController.currentPhoto = album.photos[indexPath.row]
-    viewController.transitionController.transitions = [
-      ContextualImageTransition(backDelegate: self, foreDelegate: viewController),
-      SlideUpTransition(target: .target(viewController.toolbar))
-    ]
+    viewController.transitionController.transition = PhotoAlbumTransition(backDelegate: self,
+                                                                          foreDelegate: viewController)
     present(viewController, animated: true)
   }
 
-  func backContextView(for transition: ContextualImageTransition,
+  func backContextView(for transition: PhotoAlbumTransition,
                        with foreViewController: UIViewController) -> UIImageView? {
     let currentPhoto = (foreViewController as! PhotoAlbumViewController).currentPhoto
     guard let photoIndex = album.identifierToIndex[currentPhoto.uuid] else {
@@ -155,7 +96,7 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, Contex
   }
 }
 
-private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, ContextualImageTransitionForeDelegate {
+class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, PhotoAlbumTransitionForeDelegate {
 
   var collectionView: UICollectionView!
   let toolbar = UIToolbar()
@@ -229,10 +170,14 @@ private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSo
     return .lightContent
   }
 
-  // MARK: ContextualImageTransitionForeDelegate
+  // MARK: PhotoAlbumTransitionForeDelegate
 
-  func foreContextView(for transition: ContextualImageTransition) -> UIImageView? {
+  func foreContextView(for transition: PhotoAlbumTransition) -> UIImageView? {
     return (collectionView.cellForItem(at: indexPathForCurrentPhoto()) as! PhotoCollectionViewCell).imageView
+  }
+
+  func toolbar(for transition: PhotoAlbumTransition) -> UIToolbar? {
+    return toolbar
   }
 
   // MARK: UICollectionViewDataSource

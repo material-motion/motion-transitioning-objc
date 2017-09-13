@@ -21,12 +21,12 @@
 
 @interface MDMViewControllerTransitionCoordinator : NSObject <UIViewControllerAnimatedTransitioning>
 
-- (nonnull instancetype)initWithTransitions:(nonnull NSArray<NSObject<MDMTransition> *> *)transitions
-                                  direction:(MDMTransitionDirection)direction
-                       sourceViewController:(nullable UIViewController *)sourceViewController
-                         backViewController:(nonnull UIViewController *)backViewController
-                         foreViewController:(nonnull UIViewController *)foreViewController
-                     presentationController:(nullable UIPresentationController *)presentationController;
+- (nonnull instancetype)initWithTransition:(nonnull NSObject<MDMTransition> *)transition
+                                 direction:(MDMTransitionDirection)direction
+                      sourceViewController:(nullable UIViewController *)sourceViewController
+                        backViewController:(nonnull UIViewController *)backViewController
+                        foreViewController:(nonnull UIViewController *)foreViewController
+                    presentationController:(nullable UIPresentationController *)presentationController;
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
 - (nonnull NSArray<NSObject<MDMTransition> *> *)activeTransitions;

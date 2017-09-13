@@ -66,7 +66,7 @@
 }
 
 - (void)dismissalTransitionWillBegin {
-  if ([self.presentedViewController.mdm_transitionController.activeTransitions count] == 0) {
+  if (!self.presentedViewController.mdm_transitionController.activeTransition) {
     [self.presentedViewController.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
       self.scrimView.alpha = 0;
     } completion:nil];
@@ -113,6 +113,8 @@
 
     [UIView animateWithDuration:context.duration animations:^{
       self.scrimView.alpha = context.direction == MDMTransitionDirectionForward ? 1 : 0;
+    } completion:^(BOOL finished) {
+      [context transitionDidEnd];
     }];
   }
 }

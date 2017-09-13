@@ -16,6 +16,8 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol MDMTransition;
+
 /**
  The possible directions of a transition.
  */
@@ -82,6 +84,15 @@ NS_SWIFT_NAME(TransitionContext)
  The presentation view controller for this transition.
  */
 @property(nonatomic, strong, readonly, nullable) UIPresentationController *presentationController;
+
+/**
+ Adds the provided transition as a child of the current transition and invokes its start method.
+
+ Each child transition will receive its own transition context instance to which the transition must
+ eventually invoke transitionDidEnd. Only once both the parent transition and all of its children
+ (and their children) have completed will the overall view controller transition be completed.
+ */
+- (void)composeWithTransition:(nonnull id<MDMTransition>)transition;
 
 /**
  Defers execution of the provided work until the completion of the transition.
