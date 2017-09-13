@@ -22,6 +22,9 @@
 		668E288B1F4F68D2008A4550 /* ContextualExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E288A1F4F68D2008A4550 /* ContextualExample.swift */; };
 		668E288E1F5066AA008A4550 /* PhotoAlbumExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E288D1F5066AA008A4550 /* PhotoAlbumExample.swift */; };
 		668E28901F50673A008A4550 /* PhotoAlbum.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 668E288F1F50673A008A4550 /* PhotoAlbum.xcassets */; };
+		668E28971F571CA4008A4550 /* SlideUpTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E28961F571CA4008A4550 /* SlideUpTransition.swift */; };
+		668E28991F5729C1008A4550 /* TransitionTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E28981F5729C1008A4550 /* TransitionTarget.swift */; };
+		668E289B1F572A9D008A4550 /* ContextualImageTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668E289A1F572A9D008A4550 /* ContextualImageTransition.swift */; };
 		66A320FC1F1E716600E2EAC3 /* NavControllerFadeExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664CC3D91F1E6F3000B80804 /* NavControllerFadeExample.swift */; };
 		66BBC75E1ED37DAD0015CB9B /* FadeExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC75D1ED37DAD0015CB9B /* FadeExample.swift */; };
 		66BBC76D1ED4C8790015CB9B /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BBC7691ED4C8790015CB9B /* ExampleViewController.swift */; };
@@ -75,10 +78,13 @@
 		667A3F4B1DEE269400CB3A99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		667A3F4D1DEE269400CB3A99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		667A3F531DEE273000CB3A99 /* TableOfContents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableOfContents.swift; sourceTree = "<group>"; };
-		668E28841F4F5389008A4550 /* FadeTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
+		668E28841F4F5389008A4550 /* FadeTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FadeTransition.swift; path = transitions/FadeTransition.swift; sourceTree = "<group>"; };
 		668E288A1F4F68D2008A4550 /* ContextualExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextualExample.swift; sourceTree = "<group>"; };
 		668E288D1F5066AA008A4550 /* PhotoAlbumExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumExample.swift; sourceTree = "<group>"; };
 		668E288F1F50673A008A4550 /* PhotoAlbum.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = PhotoAlbum.xcassets; sourceTree = "<group>"; };
+		668E28961F571CA4008A4550 /* SlideUpTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SlideUpTransition.swift; path = transitions/SlideUpTransition.swift; sourceTree = "<group>"; };
+		668E28981F5729C1008A4550 /* TransitionTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionTarget.swift; sourceTree = "<group>"; };
+		668E289A1F572A9D008A4550 /* ContextualImageTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContextualImageTransition.swift; path = transitions/ContextualImageTransition.swift; sourceTree = "<group>"; };
 		66BBC75D1ED37DAD0015CB9B /* FadeExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FadeExample.swift; path = ../FadeExample.swift; sourceTree = "<group>"; };
 		66BBC7691ED4C8790015CB9B /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		66BBC76A1ED4C8790015CB9B /* ExampleViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViews.swift; sourceTree = "<group>"; };
@@ -181,6 +187,7 @@
 				668E28861F4F66C7008A4550 /* Custom presentation */,
 				668E28831F4F5371008A4550 /* Fade transition */,
 				668E288C1F506698008A4550 /* Photo album */,
+				668E28951F571C8F008A4550 /* Transitions */,
 				072A063A1EEE26A900B9B5FC /* MenuExample.swift */,
 			);
 			name = examples;
@@ -233,7 +240,6 @@
 				66BBC7731ED729A70015CB9B /* FadeExample.h */,
 				66BBC7741ED729A70015CB9B /* FadeExample.m */,
 				664CC3D91F1E6F3000B80804 /* NavControllerFadeExample.swift */,
-				668E28841F4F5389008A4550 /* FadeTransition.swift */,
 			);
 			name = "Fade transition";
 			path = transitions;
@@ -261,6 +267,17 @@
 				668E288D1F5066AA008A4550 /* PhotoAlbumExample.swift */,
 			);
 			name = "Photo album";
+			sourceTree = "<group>";
+		};
+		668E28951F571C8F008A4550 /* Transitions */ = {
+			isa = PBXGroup;
+			children = (
+				668E289A1F572A9D008A4550 /* ContextualImageTransition.swift */,
+				668E28841F4F5389008A4550 /* FadeTransition.swift */,
+				668E28961F571CA4008A4550 /* SlideUpTransition.swift */,
+				668E28981F5729C1008A4550 /* TransitionTarget.swift */,
+			);
+			name = Transitions;
 			sourceTree = "<group>";
 		};
 		66BBC7681ED4C8790015CB9B /* supplemental */ = {
@@ -522,7 +539,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				666FAA841D384A6B000363DA /* AppDelegate.swift in Sources */,
+				668E28991F5729C1008A4550 /* TransitionTarget.swift in Sources */,
 				66BBC76F1ED4C8790015CB9B /* HexColor.swift in Sources */,
+				668E28971F571CA4008A4550 /* SlideUpTransition.swift in Sources */,
 				66BBC7751ED729A80015CB9B /* FadeExample.m in Sources */,
 				072A063B1EEE26A900B9B5FC /* MenuExample.swift in Sources */,
 				66BBC76D1ED4C8790015CB9B /* ExampleViewController.swift in Sources */,
@@ -530,6 +549,7 @@
 				66A320FC1F1E716600E2EAC3 /* NavControllerFadeExample.swift in Sources */,
 				668E288E1F5066AA008A4550 /* PhotoAlbumExample.swift in Sources */,
 				66BBC7701ED4C8790015CB9B /* Layout.swift in Sources */,
+				668E289B1F572A9D008A4550 /* ContextualImageTransition.swift in Sources */,
 				6629151E1ED5E0E0002B9A5D /* CustomPresentationExample.swift in Sources */,
 				668E288B1F4F68D2008A4550 /* ContextualExample.swift in Sources */,
 				66BBC76E1ED4C8790015CB9B /* ExampleViews.swift in Sources */,

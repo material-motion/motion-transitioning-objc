@@ -66,7 +66,7 @@
 }
 
 - (void)dismissalTransitionWillBegin {
-  if (!self.presentedViewController.mdm_transitionController.activeTransition) {
+  if ([self.presentedViewController.mdm_transitionController.activeTransitions count] == 0) {
     [self.presentedViewController.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
       self.scrimView.alpha = 0;
     } completion:nil];

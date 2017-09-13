@@ -78,7 +78,7 @@ private class PhotoCollectionViewCell: UICollectionViewCell {
   }
 }
 
-public class PhotoAlbumExampleViewController: UICollectionViewController, PhotoAlbumTransitionDelegate {
+public class PhotoAlbumExampleViewController: UICollectionViewController, ContextualImageTransitionBackDelegate {
 
   let album = PhotoAlbum()
 
@@ -130,12 +130,16 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, PhotoA
   public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let viewController = PhotoAlbumViewController(album: album)
     viewController.currentPhoto = album.photos[indexPath.row]
-    viewController.transitionController.transition = PhotoAlbumTransition(delegate: self)
+    viewController.transitionController.transitions = [
+      ContextualImageTransition(backDelegate: self, foreDelegate: viewController),
+      SlideUpTransition(target: .target(viewController.toolbar))
+    ]
     present(viewController, animated: true)
   }
 
-  fileprivate func contextView(forAlbumViewController: PhotoAlbumViewController) -> UIImageView? {
-    let currentPhoto = forAlbumViewController.currentPhoto
+  func backContextView(for transition: ContextualImageTransition,
+                       with foreViewController: UIViewController) -> UIImageView? {
+    let currentPhoto = (foreViewController as! PhotoAlbumViewController).currentPhoto
     guard let photoIndex = album.identifierToIndex[currentPhoto.uuid] else {
       return nil
     }
@@ -151,9 +155,10 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, PhotoA
   }
 }
 
-private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, ContextualImageTransitionForeDelegate {
 
   var collectionView: UICollectionView!
+  let toolbar = UIToolbar()
   var currentPhoto: Photo
 
   let album: PhotoAlbum
@@ -197,6 +202,11 @@ private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSo
     collectionView.bounds = extendedBounds
 
     view.addSubview(collectionView)
+
+    let toolbarSize = toolbar.sizeThatFits(view.bounds.size)
+    toolbar.frame = .init(x: 0, y: view.bounds.height - toolbarSize.height,
+                          width: toolbarSize.width, height: toolbarSize.height)
+    view.addSubview(toolbar)
   }
 
   override func viewDidLayoutSubviews() {
@@ -219,6 +229,14 @@ private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSo
     return .lightContent
   }
 
+  // MARK: ContextualImageTransitionForeDelegate
+
+  func foreContextView(for transition: ContextualImageTransition) -> UIImageView? {
+    return (collectionView.cellForItem(at: indexPathForCurrentPhoto()) as! PhotoCollectionViewCell).imageView
+  }
+
+  // MARK: UICollectionViewDataSource
+
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return album.photos.count
   }
@@ -232,6 +250,8 @@ private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSo
     return cell
   }
 
+  // MARK: UICollectionViewDelegate
+
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     dismiss(animated: true)
   }
@@ -239,100 +259,10 @@ private class PhotoAlbumViewController: UIViewController, UICollectionViewDataSo
   func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
     currentPhoto = album.photos[indexPathForCurrentPhoto().item]
   }
-  
-  func indexPathForCurrentPhoto() -> IndexPath {
+
+  // MARK: Private
+
+  private func indexPathForCurrentPhoto() -> IndexPath {
     return collectionView.indexPathsForVisibleItems.first!
-  }
-}
-
-private protocol PhotoAlbumTransitionDelegate {
-  func contextView(forAlbumViewController: PhotoAlbumViewController) -> UIImageView?
-}
-
-private class PhotoAlbumTransition: NSObject, Transition, TransitionWithFallback {
-
-  // Store the context for the lifetime of the transition.
-  let delegate: PhotoAlbumTransitionDelegate
-  init(delegate: PhotoAlbumTransitionDelegate) {
-    self.delegate = delegate
-  }
-
-  func fallbackTransition(with context: TransitionContext) -> Transition? {
-    if delegate.contextView(forAlbumViewController: context.foreViewController as! PhotoAlbumViewController) != nil {
-      return self
-    }
-    return nil
-  }
-
-  func start(with context: TransitionContext) {
-    guard let contextView = delegate.contextView(forAlbumViewController: context.foreViewController as! PhotoAlbumViewController) else {
-      return
-    }
-
-    // A small helper function for creating bi-directional animations.
-    // See https://github.com/material-motion/motion-animator-objc for a more versatile
-    // bidirectional Core Animation implementation.
-    let addAnimationToLayer: (CABasicAnimation, CALayer) -> Void = { animation, layer in
-      if context.direction == .backward {
-        let swap = animation.fromValue
-        animation.fromValue = animation.toValue
-        animation.toValue = swap
-      }
-      layer.add(animation, forKey: animation.keyPath)
-      layer.setValue(animation.toValue, forKeyPath: animation.keyPath!)
-    }
-
-    let snapshotter = TransitionViewSnapshotter(containerView: context.containerView)
-    context.defer {
-      snapshotter.removeAllSnapshots()
-    }
-
-    let foreVC = context.foreViewController as! PhotoAlbumViewController
-    let foreImageView = (foreVC.collectionView.cellForItem(at: foreVC.indexPathForCurrentPhoto()) as! PhotoCollectionViewCell).imageView
-    let imageSize = foreImageView.image!.size
-
-    let fitScale = min(foreImageView.bounds.width / imageSize.width,
-                       foreImageView.bounds.height / imageSize.height)
-    let fitSize = CGSize(width: fitScale * imageSize.width, height: fitScale * imageSize.height)
-
-    foreImageView.isHidden = true
-    context.defer {
-      foreImageView.isHidden = false
-    }
-
-    CATransaction.begin()
-    CATransaction.setCompletionBlock {
-      context.transitionDidEnd()
-    }
-
-    let fadeIn = CABasicAnimation(keyPath: "opacity")
-    fadeIn.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    fadeIn.fromValue = 0
-    fadeIn.toValue = 1
-    addAnimationToLayer(fadeIn, context.foreViewController.view.layer)
-
-    let snapshotContextView = snapshotter.snapshot(of: contextView,
-                                                   isAppearing: context.direction == .backward)
-
-    let shift = CASpringAnimation(keyPath: "position")
-    shift.damping = 500
-    shift.stiffness = 1000
-    shift.mass = 3
-    shift.duration = 0.5
-    shift.fromValue = snapshotContextView.layer.position
-    shift.toValue = CGPoint(x: context.foreViewController.view.bounds.midX,
-                            y: context.foreViewController.view.bounds.midY)
-    addAnimationToLayer(shift, snapshotContextView.layer)
-
-    let expansion = CASpringAnimation(keyPath: "bounds.size")
-    expansion.damping = 500
-    expansion.stiffness = 1000
-    expansion.mass = 3
-    expansion.duration = 0.5
-    expansion.fromValue = snapshotContextView.layer.bounds.size
-    expansion.toValue = fitSize
-    addAnimationToLayer(expansion, snapshotContextView.layer)
-
-    CATransaction.commit()
   }
 }
