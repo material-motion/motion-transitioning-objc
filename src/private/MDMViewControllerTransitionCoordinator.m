@@ -102,7 +102,8 @@
 
     _completionBlocks = [NSMutableArray array];
 
-    if (_presentationController) {
+    if (_presentationController
+        && [_presentationController respondsToSelector:@selector(startWithContext:)]) {
       _presentationContext =
           [[MDMViewControllerTransitionContext alloc] initWithTransition:nil
                                                                direction:direction
