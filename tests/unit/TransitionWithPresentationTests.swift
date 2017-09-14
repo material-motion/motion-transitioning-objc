@@ -32,7 +32,7 @@ class TransitionWithPresentationTests: XCTestCase {
 
   func testPresentationControllerIsQueried() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition = PresentationTransition()
+    presentedViewController.transitionController.transitions = [PresentationTransition()]
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {

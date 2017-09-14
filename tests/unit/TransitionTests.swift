@@ -32,7 +32,7 @@ class TransitionTests: XCTestCase {
 
   func testTransitionDidEndCausesTransitionCompletion() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition = InstantCompletionTransition()
+    presentedViewController.transitionController.transitions = [InstantCompletionTransition()]
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {
