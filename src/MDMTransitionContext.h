@@ -19,7 +19,6 @@
 /**
  The possible directions of a transition.
  */
-NS_SWIFT_NAME(TransitionDirection)
 typedef NS_ENUM(NSUInteger, MDMTransitionDirection) {
   /**
    The fore view controller is being presented.
@@ -30,7 +29,7 @@ typedef NS_ENUM(NSUInteger, MDMTransitionDirection) {
    The fore view controller is being dismissed.
    */
   MDMTransitionDirectionBackward,
-};
+} NS_SWIFT_NAME(TransitionDirection);
 
 /**
  A presentation info instance contains objects related to a transition.
