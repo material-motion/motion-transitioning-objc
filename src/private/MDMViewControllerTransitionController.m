@@ -33,7 +33,7 @@
   __weak UIViewController *_source;
 }
 
-@synthesize transitions = _transitions;
+@synthesize transition = _transition;
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController {
   self = [super init];
@@ -46,15 +46,7 @@
 #pragma mark - Public
 
 - (void)setTransition:(id<MDMTransition>)transition {
-  self.transitions = @[transition];
-}
-
-- (id<MDMTransition>)transition {
-  return [self.transitions firstObject];
-}
-
-- (void)setTransitions:(NSArray<id<MDMTransition>> *)transitions {
-  _transitions = [transitions copy];
+  _transition = transition;
 
   // Set the default modal presentation style.
   id<MDMTransitionWithPresentation> withPresentation = [self presentationTransition];
@@ -73,10 +65,8 @@
 }
 
 - (id<MDMTransitionWithPresentation>)presentationTransition {
-  for (id<MDMTransition> transition in _transitions) {
-    if ([transition respondsToSelector:@selector(defaultModalPresentationStyle)]) {
-      return (id<MDMTransitionWithPresentation>)transition;
-    }
+  if ([self.transition respondsToSelector:@selector(defaultModalPresentationStyle)]) {
+    return (id<MDMTransitionWithPresentation>)self.transition;
   }
   return nil;
 }
@@ -143,7 +133,7 @@
   }
   NSAssert(!_coordinator, @"A transition is already active.");
 
-  _coordinator = [[MDMViewControllerTransitionCoordinator alloc] initWithTransitions:self.transitions
+  _coordinator = [[MDMViewControllerTransitionCoordinator alloc] initWithTransition:self.transition
                                                                                 direction:direction
                                                                      sourceViewController:source
                                                                        backViewController:back

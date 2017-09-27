@@ -35,10 +35,10 @@ class ContextualExampleViewController: ExampleViewController {
     // Note that in this example we're populating the contextual transition with the tapped view.
     // Our rudimentary transition will animate the context view to the center of the screen from its
     // current location.
-    controller.transitionController.transitions = [
+    controller.transitionController.transition = CompositeTransition(transitions: [
       FadeTransition(target: .foreView),
       ContextualTransition(contextView: tapGesture.view!)
-    ]
+    ])
 
     present(controller, animated: true)
   }
@@ -125,11 +125,8 @@ private class ContextualTransition: NSObject, Transition {
                             y: context.foreViewController.view.bounds.midY)
     addAnimationToLayer(shift, snapshotContextView.layer)
 
-    let fadeOut = CABasicAnimation(keyPath: "opacity")
-    fadeOut.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    fadeOut.fromValue = 1
-    fadeOut.toValue = 0
-    addAnimationToLayer(fadeOut, snapshotContextView.layer)
+    context.compose(with: FadeTransition(target: .target(snapshotContextView),
+                                         style: .fadeOut))
 
     CATransaction.commit()
   }

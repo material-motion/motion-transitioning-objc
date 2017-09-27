@@ -18,18 +18,25 @@
 
 #import "MDMTransition.h"
 
-@interface MDMViewControllerTransitionContext : NSObject <MDMTransitionContext>
+@class MDMViewControllerTransitionContextNode;
+
+@protocol MDMViewControllerTransitionContextNodeParent <NSObject>
+- (void)childNodeTransitionDidEnd:(MDMViewControllerTransitionContextNode *)childNode;
+@end
+
+@interface MDMViewControllerTransitionContextNode : NSObject <MDMTransitionContext, MDMViewControllerTransitionContextNodeParent>
 @property(nonatomic, strong) id<UIViewControllerContextTransitioning> transitionContext;
-@property(nonatomic, strong) id<MDMTransition> transition;
+@property(nonatomic, strong, readonly) id<MDMTransition> transition;
+@property(nonatomic, copy, readonly) NSMutableArray<MDMViewControllerTransitionContextNode *> *children;
 @end
 
-@protocol MDMViewControllerTransitionContextDelegate <NSObject>
-- (void)transitionContextDidEnd:(MDMViewControllerTransitionContext *)context;
-@end
-
-@implementation MDMViewControllerTransitionContext {
+@implementation MDMViewControllerTransitionContextNode {
+  // Every node points to the same array in memory.
   NSMutableArray *_sharedCompletionBlocks;
-  __weak id<MDMViewControllerTransitionContextDelegate> _delegate;
+
+  BOOL _hasStarted;
+  BOOL _didEnd;
+  __weak id<MDMViewControllerTransitionContextNodeParent> _parent;
 }
 
 @synthesize duration = _duration;
@@ -46,9 +53,10 @@
                 foreViewController:(UIViewController *)foreViewController
             presentationController:(UIPresentationController *)presentationController
             sharedCompletionBlocks:(NSMutableArray *)sharedCompletionBlocks
-                          delegate:(id<MDMViewControllerTransitionContextDelegate>)delegate {
+                            parent:(id<MDMViewControllerTransitionContextNodeParent>)parent {
   self = [super init];
   if (self) {
+    _children = [NSMutableArray array];
     _transition = transition;
     _direction = direction;
     _sourceViewController = sourceViewController;
@@ -56,9 +64,122 @@
     _foreViewController = foreViewController;
     _presentationController = presentationController;
     _sharedCompletionBlocks = sharedCompletionBlocks;
-    _delegate = delegate;
+    _parent = parent;
   }
   return self;
+}
+
+#pragma mark - Private
+
+- (MDMViewControllerTransitionContextNode *)spawnChildWithTransition:(id<MDMTransition>)transition {
+  MDMViewControllerTransitionContextNode *node =
+    [[MDMViewControllerTransitionContextNode alloc] initWithTransition:transition
+                                                             direction:_direction
+                                                  sourceViewController:_sourceViewController
+                                                    backViewController:_backViewController
+                                                    foreViewController:_foreViewController
+                                                presentationController:_presentationController
+                                                sharedCompletionBlocks:_sharedCompletionBlocks
+                                                                parent:self];
+  node.transitionContext = _transitionContext;
+  return node;
+}
+
+- (void)checkAndNotifyOfCompletion {
+  BOOL anyChildActive = NO;
+  for (MDMViewControllerTransitionContextNode *child in _children) {
+    if (!child->_didEnd) {
+      anyChildActive = YES;
+      break;
+    }
+  }
+
+  if (!anyChildActive && _didEnd) { // Inform our parent of completion.
+    [_parent childNodeTransitionDidEnd:self];
+  }
+}
+
+#pragma mark - Public
+
+- (void)start {
+  if (_hasStarted) {
+    return;
+  }
+
+  _hasStarted = YES;
+
+  for (MDMViewControllerTransitionContextNode *child in _children) {
+    [child attemptFallback];
+
+    [child start];
+  }
+
+  if ([_transition respondsToSelector:@selector(startWithContext:)]) {
+    [_transition startWithContext:self];
+  } else {
+    _didEnd = YES;
+
+    [self checkAndNotifyOfCompletion];
+  }
+}
+
+- (NSArray *)activeTransitions {
+  NSMutableArray *activeTransitions = [NSMutableArray array];
+  if (!_didEnd) {
+    [activeTransitions addObject:self];
+  }
+  for (MDMViewControllerTransitionContextNode *child in _children) {
+    [activeTransitions addObjectsFromArray:[child activeTransitions]];
+  }
+  return activeTransitions;
+}
+
+- (void)setTransitionContext:(id<UIViewControllerContextTransitioning>)transitionContext {
+  _transitionContext = transitionContext;
+
+  for (MDMViewControllerTransitionContextNode *child in _children) {
+    child.transitionContext = transitionContext;
+  }
+}
+
+- (void)setDuration:(NSTimeInterval)duration {
+  _duration = duration;
+
+  for (MDMViewControllerTransitionContextNode *child in _children) {
+    child.duration = duration;
+  }
+}
+
+- (void)attemptFallback {
+  id<MDMTransition> transition = _transition;
+  while ([transition respondsToSelector:@selector(fallbackTransitionWithContext:)]) {
+    id<MDMTransitionWithFallback> withFallback = (id<MDMTransitionWithFallback>)transition;
+
+    id<MDMTransition> fallback = [withFallback fallbackTransitionWithContext:self];
+    if (fallback == transition) {
+      break;
+    }
+    transition = fallback;
+  }
+  _transition = transition;
+}
+
+#pragma mark - MDMViewControllerTransitionContextNodeDelegate
+
+- (void)childNodeTransitionDidEnd:(MDMViewControllerTransitionContextNode *)contextNode {
+  [self checkAndNotifyOfCompletion];
+}
+
+#pragma mark - MDMTransitionContext
+
+- (void)composeWithTransition:(id<MDMTransition>)transition {
+  MDMViewControllerTransitionContextNode *child = [self spawnChildWithTransition:transition];
+
+  [_children addObject:child];
+
+  if (_hasStarted) {
+    [child start];
+  }
 }
 
 - (UIView *)containerView {
@@ -70,31 +191,35 @@
 }
 
 - (void)transitionDidEnd {
-  [_delegate transitionContextDidEnd:self];
+  if (_didEnd) {
+    return; // No use in re-notifying.
+  }
+  _didEnd = YES;
+
+  [self checkAndNotifyOfCompletion];
 }
 
 @end
 
-@interface MDMViewControllerTransitionCoordinator() <MDMViewControllerTransitionContextDelegate>
+@interface MDMViewControllerTransitionCoordinator() <MDMViewControllerTransitionContextNodeParent>
 @end
 
 @implementation MDMViewControllerTransitionCoordinator {
   MDMTransitionDirection _direction;
   UIPresentationController *_presentationController;
 
-  NSMutableOrderedSet *_contexts;
+  MDMViewControllerTransitionContextNode *_root;
   NSMutableArray *_completionBlocks;
-  MDMViewControllerTransitionContext *_presentationContext;
 
   id<UIViewControllerContextTransitioning> _transitionContext;
 }
 
-- (instancetype)initWithTransitions:(NSArray<NSObject<MDMTransition> *> *)originalTransitions
-                          direction:(MDMTransitionDirection)direction
-               sourceViewController:(UIViewController *)sourceViewController
-                 backViewController:(UIViewController *)backViewController
-                 foreViewController:(UIViewController *)foreViewController
-             presentationController:(UIPresentationController *)presentationController {
+- (instancetype)initWithTransition:(NSObject<MDMTransition> *)transition
+                         direction:(MDMTransitionDirection)direction
+              sourceViewController:(UIViewController *)sourceViewController
+                backViewController:(UIViewController *)backViewController
+                foreViewController:(UIViewController *)foreViewController
+            presentationController:(UIPresentationController *)presentationController {
   self = [super init];
   if (self) {
     _direction = direction;
@@ -102,45 +227,39 @@
 
     _completionBlocks = [NSMutableArray array];
 
-    if (_presentationController
-        && [_presentationController respondsToSelector:@selector(startWithContext:)]) {
-      _presentationContext =
-          [[MDMViewControllerTransitionContext alloc] initWithTransition:nil
-                                                               direction:direction
-                                                    sourceViewController:sourceViewController
-                                                      backViewController:backViewController
-                                                      foreViewController:foreViewController
-                                                  presentationController:presentationController
-                                                  sharedCompletionBlocks:_completionBlocks
-                                                                delegate:self];
-    }
-
     // Build our contexts:
 
-    _contexts = [NSMutableOrderedSet orderedSetWithCapacity:[originalTransitions count]];
-    NSMutableArray *transitions = [NSMutableArray arrayWithCapacity:[originalTransitions count]];
-    for (id<MDMTransition> transition in originalTransitions) {
-      MDMViewControllerTransitionContext *context =
-          [[MDMViewControllerTransitionContext alloc] initWithTransition:transition
-                                                               direction:direction
-                                                    sourceViewController:sourceViewController
-                                                      backViewController:backViewController
-                                                      foreViewController:foreViewController
-                                                  presentationController:presentationController
-                                                  sharedCompletionBlocks:_completionBlocks
-                                                                delegate:self];
-      if ([transition respondsToSelector:@selector(canPerformTransitionWithContext:)]) {
-        id<MDMTransitionWithFeasibility> withFeasibility = (id<MDMTransitionWithFeasibility>)transition;
-        if (![withFeasibility canPerformTransitionWithContext:context]) {
-          continue;
-        }
-      }
+    _root = [[MDMViewControllerTransitionContextNode alloc] initWithTransition:transition
+                                                                     direction:direction
+                                                          sourceViewController:sourceViewController
+                                                            backViewController:backViewController
+                                                            foreViewController:foreViewController
+                                                        presentationController:presentationController
+                                                        sharedCompletionBlocks:_completionBlocks
+                                                                        parent:self];
 
-      [transitions addObject:transition];
-      [_contexts addObject:context];
+    if (_presentationController
+        && [_presentationController respondsToSelector:@selector(startWithContext:)]) {
+      MDMViewControllerTransitionContextNode *presentationNode =
+        [[MDMViewControllerTransitionContextNode alloc] initWithTransition:(id<MDMTransition>)_presentationController
+                                                                 direction:direction
+                                                      sourceViewController:sourceViewController
+                                                        backViewController:backViewController
+                                                        foreViewController:foreViewController
+                                                    presentationController:presentationController
+                                                    sharedCompletionBlocks:_completionBlocks
+                                                                    parent:_root];
+      [_root.children addObject:presentationNode];
     }
 
-    if ([_contexts count] == 0) {
+    if ([transition respondsToSelector:@selector(canPerformTransitionWithContext:)]) {
+      id<MDMTransitionWithFeasibility> withFeasibility = (id<MDMTransitionWithFeasibility>)transition;
+      if (![withFeasibility canPerformTransitionWithContext:_root]) {
+        transition = nil;
+      }
+    }
+
+    if (!transition) {
       self = nil;
       return nil; // No active transitions means no need for a coordinator.
     }
@@ -148,17 +267,11 @@
   return self;
 }
 
-#pragma mark - MDMViewControllerTransitionContextDelegate
+#pragma mark - MDMViewControllerTransitionContextNodeDelegate
 
-- (void)transitionContextDidEnd:(MDMViewControllerTransitionContext *)context {
-  if (context != nil && _presentationContext == context) {
-    _presentationContext = nil;
-  } else if ([_contexts containsObject:context]) {
-    [_contexts removeObject:context];
-  }
-
-  if (_contexts != nil && [_contexts count] == 0 && _presentationContext == nil) {
-    _contexts = nil;
+- (void)childNodeTransitionDidEnd:(MDMViewControllerTransitionContextNode *)node {
+  if (_root != nil && _root == node) {
+    _root = nil;
 
     for (void (^work)() in _completionBlocks) {
       work();
@@ -166,6 +279,7 @@
     [_completionBlocks removeAllObjects];
 
     [_transitionContext completeTransition:true];
+    _transitionContext = nil;
 
     [_delegate transitionDidCompleteWithCoordinator:self];
   }
@@ -174,15 +288,13 @@
 #pragma mark - UIViewControllerAnimatedTransitioning
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-  NSTimeInterval maxDuration = 0;
-  for (MDMViewControllerTransitionContext *context in _contexts) {
-    if ([context.transition respondsToSelector:@selector(transitionDurationWithContext:)]) {
-      id<MDMTransitionWithCustomDuration> withCustomDuration = (id<MDMTransitionWithCustomDuration>)context.transition;
-      maxDuration = MAX(maxDuration, [withCustomDuration transitionDurationWithContext:context]);
-    }
+  NSTimeInterval duration = 0.35;
+  if ([_root.transition respondsToSelector:@selector(transitionDurationWithContext:)]) {
+    id<MDMTransitionWithCustomDuration> withCustomDuration = (id<MDMTransitionWithCustomDuration>)_root.transition;
+    duration = [withCustomDuration transitionDurationWithContext:_root];
   }
-
-  return (maxDuration > 0) ? maxDuration : 0.35;
+  _root.duration = duration;
+  return duration;
 }
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
@@ -196,19 +308,13 @@
 // MDMViewControllerTransitionController.
 
 - (NSArray<NSObject<MDMTransition> *> *)activeTransitions {
-  NSMutableArray *transitions = [NSMutableArray array];
-  for (MDMViewControllerTransitionContext *context in _contexts) {
-    [transitions addObject:context.transition];
-  }
-  return transitions;
+  return [_root activeTransitions];
 }
 
 #pragma mark - Private
 
 - (void)initiateTransition {
-  for (MDMViewControllerTransitionContext *context in _contexts) {
-    context.transitionContext = _transitionContext;
-  }
+  _root.transitionContext = _transitionContext;
 
   UIViewController *from = [_transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
   if (from) {
@@ -240,20 +346,13 @@
     [to.view layoutIfNeeded];
   }
 
-  [self mapTransitions];
+  [_root attemptFallback];
   [self anticipateOnlyExplicitAnimations];
 
   [CATransaction begin];
   [CATransaction setAnimationDuration:[self transitionDuration:_transitionContext]];
 
-  if ([_presentationController respondsToSelector:@selector(startWithContext:)]) {
-    id<MDMTransition> asTransition = (id<MDMTransition>)_presentationController;
-    [asTransition startWithContext:_presentationContext];
-  }
-
-  for (MDMViewControllerTransitionContext *context in _contexts) {
-    [context.transition startWithContext:context];
-  }
+  [_root start];
 
   [CATransaction commit];
 }
@@ -274,24 +373,6 @@
                    completion:^(BOOL finished) {
                      [throwawayView removeFromSuperview];
                    }];
-}
-
-#pragma mark - Private
-
-- (void)mapTransitions {
-  for (MDMViewControllerTransitionContext *context in _contexts) {
-    id<MDMTransition> transition = context.transition;
-    while ([transition respondsToSelector:@selector(fallbackTransitionWithContext:)]) {
-      id<MDMTransitionWithFallback> withFallback = (id<MDMTransitionWithFallback>)transition;
-
-      id<MDMTransition> fallback = [withFallback fallbackTransitionWithContext:context];
-      if (fallback == transition) {
-        break;
-      }
-      transition = fallback;
-    }
-    context.transition = transition;
-  }
 }
 
 @end

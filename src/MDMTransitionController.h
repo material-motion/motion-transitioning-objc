@@ -28,26 +28,21 @@ NS_SWIFT_NAME(TransitionController)
 @protocol MDMTransitionController
 
 /**
- A collection of transition objects that will be used to drive a single view controller transition.
+ The transition instance that will govern any presentation or dismissal of the view controller.
 
- The transition instances will govern any presentation or dismissal of the view controller.
+ If no transition is provided then a default UIKit transition will be used.
 
- If no transition instance is provided then a default UIKit transition will be used.
-
- If any transition conforms to MDMTransitionWithPresentation, then the first such transition's
- default modal presentation style will be queried and assigned to the associated view controller's
+ If the transition conforms to MDMTransitionWithPresentation, then the transition's default modal
+ presentation style will be queried and assigned to the associated view controller's
  `modalPresentationStyle` property.
-
- If any transition conforms to MDMTransitionWithCustomDuration, then the each transition's duration
- will queried and the largest value will be used for the overall transition's duration.
  */
-@property(nonatomic, copy, nullable) NSArray<id<MDMTransition>> *transitions;
+@property(nonatomic, strong, nullable) id<MDMTransition> transition;
 
 /**
- The active transition instances.
+ The active transition instance.
 
  This may be non-nil while a transition is active.
  */
-@property(nonatomic, strong, nullable, readonly) NSArray<id<MDMTransition>> *activeTransitions;
+@property(nonatomic, strong, nullable, readonly) id<MDMTransition> activeTransition;
 
 @end

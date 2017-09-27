@@ -40,7 +40,7 @@ NS_SWIFT_NAME(Transition)
  A transition with custom duration is able to override the default transition duration.
  */
 NS_SWIFT_NAME(TransitionWithCustomDuration)
-@protocol MDMTransitionWithCustomDuration
+@protocol MDMTransitionWithCustomDuration <MDMTransition>
 
 /**
  The desired duration of this transition in seconds.
@@ -56,7 +56,7 @@ NS_SWIFT_NAME(TransitionWithCustomDuration)
  as requesting a context view where none is available.
  */
 NS_SWIFT_NAME(TransitionWithFallback)
-@protocol MDMTransitionWithFallback
+@protocol MDMTransitionWithFallback <MDMTransition>
 
 /**
  Asks the receiver to return a transition instance that should be used to drive this transition.
@@ -74,17 +74,20 @@ NS_SWIFT_NAME(TransitionWithFallback)
  A transition with feasibility can indicate whether it's capable of handling a given context.
  */
 NS_SWIFT_NAME(TransitionWithFeasibility)
-@protocol MDMTransitionWithFeasibility
+@protocol MDMTransitionWithFeasibility <MDMTransition>
 
 /**
  Asks the receiver whether it's capable of performing the transition with the given context.
 
  If NO is returned, the receiver's startWithContext: will not be invoked.
- If no transition is feasible, then a default UIKit transition will be performed instead.
+ If the transition is infeasible, then a default UIKit transition will be performed instead.
 
  If YES is returned, the receiver's startWithContext: will be invoked.
 
  The context's containerView will be nil during this call.
+
+ If your transition composes to other transitions then it may wish to query those transitions for
+ feasibility as well.
  */
 - (BOOL)canPerformTransitionWithContext:(nonnull id<MDMTransitionContext>)context;
 
