@@ -273,7 +273,7 @@
   if (_root != nil && _root == node) {
     _root = nil;
 
-    for (void (^work)() in _completionBlocks) {
+    for (void (^work)(void) in _completionBlocks) {
       work();
     }
     [_completionBlocks removeAllObjects];
