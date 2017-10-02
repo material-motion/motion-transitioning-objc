@@ -73,6 +73,26 @@ NS_SWIFT_NAME(TransitionWithFallback)
 @end
 
 /**
+ A transition with feasibility can indicate whether it's capable of handling a given context.
+ */
+NS_SWIFT_NAME(TransitionWithFeasibility)
+@protocol MDMTransitionWithFeasibility <MDMTransition>
+
+/**
+ Asks the receiver whether it's capable of performing the transition with the given context.
+
+ If NO is returned, the receiver's startWithContext: will not be invoked.
+ If the transition is infeasible, then a default UIKit transition will be performed instead.
+
+ If YES is returned, the receiver's startWithContext: will be invoked.
+
+ The context's containerView will be nil during this call.
+ */
+- (BOOL)canPerformTransitionWithContext:(nonnull id<MDMTransitionContext>)context;
+
+@end
+
+/**
  A transition with presentation is able to customize the overall presentation of the transition,
  including adding temporary views and changing the destination frame of the presented view
  controller.
