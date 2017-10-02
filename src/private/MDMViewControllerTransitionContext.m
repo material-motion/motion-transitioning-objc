@@ -46,7 +46,15 @@
 
     _completionBlocks = [NSMutableArray array];
 
-    _transition = [self fallbackForTransition:_transition];
+    if ([_transition respondsToSelector:@selector(canPerformTransitionWithContext:)]) {
+      id<MDMTransitionWithFeasibility> withFeasibility = (id<MDMTransitionWithFeasibility>)_transition;
+      if (![withFeasibility canPerformTransitionWithContext:self]) {
+        _transition = nil;
+      }
+    } else {
+      _transition = [self fallbackForTransition:_transition];
+    }
+
     if (!_transition) {
       return nil;
     }
