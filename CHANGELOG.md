@@ -1,7 +1,69 @@
-# #develop#
+# 4.0.0
 
- TODO: Enumerate changes.
+This major release adds support for composable transitions. See the catalog app for a variety of
+examples making use of this new functionality.
 
+## Fixed issues
+
+- [Transitions would not complete if the presentation controller didn't implement the startWithContext method](https://github.com/material-motion/transitioning-objc/pull/45)
+
+## Breaking changes
+
+- `MDMTransitionWithFallback`'s return value is now nonnull. If you depended on the nil behavior,
+you must now conform to the new protocol `MDMTransitionWithFeasibility` and return `NO` for
+`canPerformTransitionWithContext:`.
+- `MDMTransitionDirection` has been renamed to `TransitionDirection` in Swift.
+
+## New features
+
+`MDMTransitionWithFeasibility` allows a transition to indicate whether it is capable of performing
+the transition with a given context.
+
+The new `composeWithTransition:` API on `MDMTransitionContext` makes it possible to build modular
+transition objects that delegate responsibility out to other transition objects. View the
+`PhotoAlbumTransition` example transition to see the following code in action:
+
+```swift
+context.compose(with: FadeTransition(target: .foreView, style: .fadeIn))
+context.compose(with: SpringFrameTransition(target: .target(snapshotContextView),
+                                            size: fitSize))
+
+if let toolbar = foreDelegate.toolbar(for: self) {
+  context.compose(with: SlideUpTransition(target: .target(toolbar)))
+}
+```
+
+## Source changes
+
+* [Update Xcode build settings to Xcode 9 warnings and resolve build error.](https://github.com/material-motion/transitioning-objc/commit/5ed85cdc795ae6660901c5e2ae237732f04649e1) (Jeff Verkoeyen)
+* [Rework multi-transition support using composition. (#43)](https://github.com/material-motion/transitioning-objc/commit/0b57361557476c7d3ecb8f4c9878da21a2e735ab) (featherless)
+* [Fix the Swift symbol name for MDMTransitionDirection. (#44)](https://github.com/material-motion/transitioning-objc/commit/4cdcf4ca0324a1f83d572440887fe5a5d18ee00b) (featherless)
+* [Fix bug where transitions would not complete if the presentation controller didn't implement the startWithContext method. (#45)](https://github.com/material-motion/transitioning-objc/commit/784328dae8509df0a2beb3a5afa9701f1e275950) (featherless)
+* [Fix broken unit tests.](https://github.com/material-motion/transitioning-objc/commit/46c92ebcab642969ba70ea43aa512cac1cc3cad4) (Jeff Verkoeyen)
+* [Add multi-transition support. (#40)](https://github.com/material-motion/transitioning-objc/commit/8653958a5a9419891861fb6fd7648791ca3c744c) (featherless)
+* [Remove unused protocol forward declaration.](https://github.com/material-motion/transitioning-objc/commit/74c1655fc3614e5e9788db8b53e8bff83691137a) (Jeff Verkoeyen)
+
+## API changes
+
+### MDMTransitionWithCustomDuration
+
+*changed* protocol `MDMTransitionWithCustomDuration` now conforms to `MDMTransition`.
+
+### MDMTransitionWithFallback
+
+*changed* protocol `MDMTransitionWithFallback` now conforms to `MDMTransition`.
+
+### MDMTransitionWithFeasibility
+
+*new* protocol `MDMTransitionWithFeasibility`.
+
+### MDMTransitionContext
+
+*new* method `composeWithTransition:`
+
+## Non-source changes
+
+* [Add platform to the Podfile per pod install recommendation.](https://github.com/material-motion/transitioning-objc/commit/7384187b2ddd6a2760f5279cabb5032ea3b1e24e) (Jeff Verkoeyen)
 
 # 3.2.1
 
