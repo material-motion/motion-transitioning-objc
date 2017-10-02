@@ -103,12 +103,12 @@ final class VerticalSheetTransition: NSObject, Transition {
   }
 }
 
-extension VerticalSheetTransition: TransitionWithPresentation, TransitionWithFeasibility {
+extension VerticalSheetTransition: TransitionWithPresentation, TransitionWithFallback {
 
   // We customize the transition going forward but fall back to UIKit for dismissal. Our
   // presentation controller will govern both of these transitions.
-  func canPerformTransition(with context: TransitionContext) -> Bool {
-    return context.direction == .forward
+  func fallbackTransition(with context: TransitionContext) -> Transition? {
+    return context.direction == .forward ? self : nil
   }
 
   // This method is invoked when we assign the transition to the transition controller. The result

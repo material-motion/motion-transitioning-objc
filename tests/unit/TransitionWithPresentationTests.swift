@@ -30,10 +30,9 @@ class TransitionWithPresentationTests: XCTestCase {
     window = nil
   }
 
-  func testPresentationControllerIsQueriedAndCompletesWithoutAnimation() {
+  func testPresentationControllerIsQueried() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition =
-      PresentationTransition(presentationControllerType: TestingPresentationController.self)
+    presentedViewController.transitionController.transition = PresentationTransition()
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {
@@ -44,40 +43,18 @@ class TransitionWithPresentationTests: XCTestCase {
 
     XCTAssert(presentedViewController.presentationController is TestingPresentationController)
   }
-
-  func testPresentationControllerIsQueriedAndCompletesWithAnimation() {
-    let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition =
-      PresentationTransition(presentationControllerType: TransitionPresentationController.self)
-
-    let didComplete = expectation(description: "Did complete")
-    window.rootViewController!.present(presentedViewController, animated: true) {
-      didComplete.fulfill()
-    }
-
-    waitForExpectations(timeout: 0.5)
-
-    XCTAssert(presentedViewController.presentationController is TransitionPresentationController)
-  }
 }
 
 final class TestingPresentationController: UIPresentationController {
 }
 
 final class PresentationTransition: NSObject, TransitionWithPresentation {
-  let presentationControllerType: UIPresentationController.Type
-  init(presentationControllerType: UIPresentationController.Type) {
-    self.presentationControllerType = presentationControllerType
-
-    super.init()
-  }
-
   func defaultModalPresentationStyle() -> UIModalPresentationStyle {
     return .custom
   }
 
   func presentationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController?) -> UIPresentationController? {
-    return presentationControllerType.init(presentedViewController: presented, presenting: presenting)
+    return TestingPresentationController(presentedViewController: presented, presenting: presenting)
   }
 
   func start(with context: TransitionContext) {

@@ -1,6 +1,5 @@
 workspace 'MotionTransitioning.xcworkspace'
 use_frameworks!
-platform :ios, '8.0'
 
 target "TransitionsCatalog" do
   pod 'CatalogByConvention'

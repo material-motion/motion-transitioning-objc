@@ -17,9 +17,9 @@
 #import "MDMViewControllerTransitionController.h"
 
 #import "MDMTransition.h"
-#import "MDMViewControllerTransitionCoordinator.h"
+#import "MDMViewControllerTransitionContext.h"
 
-@interface MDMViewControllerTransitionController () <UIViewControllerTransitioningDelegate, MDMViewControllerTransitionCoordinatorDelegate>
+@interface MDMViewControllerTransitionController () <UIViewControllerTransitioningDelegate, MDMViewControllerTransitionContextDelegate>
 @end
 
 @implementation MDMViewControllerTransitionController {
@@ -29,7 +29,7 @@
 
   __weak UIPresentationController *_presentationController;
 
-  MDMViewControllerTransitionCoordinator *_coordinator;
+  MDMViewControllerTransitionContext *_context;
   __weak UIViewController *_source;
 }
 
@@ -49,26 +49,15 @@
   _transition = transition;
 
   // Set the default modal presentation style.
-  id<MDMTransitionWithPresentation> withPresentation = [self presentationTransition];
-  if (withPresentation != nil) {
+  if ([_transition respondsToSelector:@selector(defaultModalPresentationStyle)]) {
+    id<MDMTransitionWithPresentation> withPresentation = (id<MDMTransitionWithPresentation>)_transition;
     UIModalPresentationStyle style = [withPresentation defaultModalPresentationStyle];
     _associatedViewController.modalPresentationStyle = style;
   }
 }
 
 - (id<MDMTransition>)activeTransition {
-  return [self.activeTransitions firstObject];
-}
-
-- (NSArray<id<MDMTransition>> *)activeTransitions {
-  return [_coordinator activeTransitions];
-}
-
-- (id<MDMTransitionWithPresentation>)presentationTransition {
-  if ([self.transition respondsToSelector:@selector(defaultModalPresentationStyle)]) {
-    return (id<MDMTransitionWithPresentation>)self.transition;
-  }
-  return nil;
+  return _context.transition;
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate
@@ -84,7 +73,7 @@
                                   backViewController:presenting
                                   foreViewController:presented
                                            direction:MDMTransitionDirectionForward];
-  return _coordinator;
+  return _context;
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
@@ -92,7 +81,7 @@
                                   backViewController:dismissed.presentingViewController
                                   foreViewController:dismissed
                                            direction:MDMTransitionDirectionBackward];
-  return _coordinator;
+  return _context;
 }
 
 // Presentation
@@ -100,10 +89,10 @@
 - (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented
                                                       presentingViewController:(UIViewController *)presenting
                                                           sourceViewController:(UIViewController *)source {
-  id<MDMTransitionWithPresentation> withPresentation = [self presentationTransition];
-  if (withPresentation == nil) {
+  if (![_transition respondsToSelector:@selector(presentationControllerForPresentedViewController:presentingViewController:sourceViewController:)]) {
     return nil;
   }
+  id<MDMTransitionWithPresentation> withPresentation = (id<MDMTransitionWithPresentation>)_transition;
   UIPresentationController *presentationController =
       [withPresentation presentationControllerForPresentedViewController:presented
                                                 presentingViewController:presenting
@@ -114,11 +103,11 @@
   return presentationController;
 }
 
-#pragma mark - MDMViewControllerTransitionCoordinatorDelegate
+#pragma mark - MDMViewControllerTransitionContextDelegate
 
-- (void)transitionDidCompleteWithCoordinator:(MDMViewControllerTransitionCoordinator *)coordinator {
-  if (_coordinator == coordinator) {
-    _coordinator = nil;
+- (void)transitionDidCompleteWithContext:(MDMViewControllerTransitionContext *)context {
+  if (_context == context) {
+    _context = nil;
   }
 }
 
@@ -129,17 +118,19 @@
                                   foreViewController:(nonnull UIViewController *)fore
                                            direction:(MDMTransitionDirection)direction {
   if (direction == MDMTransitionDirectionBackward) {
-    _coordinator = nil;
+    _context = nil;
   }
-  NSAssert(!_coordinator, @"A transition is already active.");
+  NSAssert(!_context, @"A transition is already active.");
 
-  _coordinator = [[MDMViewControllerTransitionCoordinator alloc] initWithTransition:self.transition
-                                                                                direction:direction
-                                                                     sourceViewController:source
-                                                                       backViewController:back
-                                                                       foreViewController:fore
-                                                                   presentationController:_presentationController];
-  _coordinator.delegate = self;
+  if (_transition) {
+    _context = [[MDMViewControllerTransitionContext alloc] initWithTransition:_transition
+                                                                    direction:direction
+                                                         sourceViewController:source
+                                                           backViewController:back
+                                                           foreViewController:fore
+                                                       presentationController:_presentationController];
+    _context.delegate = self;
+  }
 }
 
 @end

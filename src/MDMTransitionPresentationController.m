@@ -113,8 +113,6 @@
 
     [UIView animateWithDuration:context.duration animations:^{
       self.scrimView.alpha = context.direction == MDMTransitionDirectionForward ? 1 : 0;
-    } completion:^(BOOL finished) {
-      [context transitionDidEnd];
     }];
   }
 }

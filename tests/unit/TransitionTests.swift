@@ -30,7 +30,7 @@ class TransitionTests: XCTestCase {
     window = nil
   }
 
-  func testTransitionDidEndDoesComplete() {
+  func testTransitionDidEndCausesTransitionCompletion() {
     let presentedViewController = UIViewController()
     presentedViewController.transitionController.transition = InstantCompletionTransition()
 
@@ -39,58 +39,14 @@ class TransitionTests: XCTestCase {
       didComplete.fulfill()
     }
 
-    waitForExpectations(timeout: 0.1)
+    waitForExpectations(timeout: 0.5)
 
-    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
-  }
-
-  func testTransitionCompositionDoesComplete() {
-    let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition = CompositeTransition(transitions: [
-      InstantCompletionTransition(),
-      InstantCompletionTransition()
-    ])
-
-    let didComplete = expectation(description: "Did complete")
-    window.rootViewController!.present(presentedViewController, animated: true) {
-      didComplete.fulfill()
-    }
-
-    waitForExpectations(timeout: 0.1)
-
-    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
-  }
-
-  func testTransitionFallbackToOtherTransitionDoesComplete() {
-    let presentedViewController = UIViewController()
-    let transition = FallbackTransition(to: InstantCompletionTransition())
-    presentedViewController.transitionController.transition = transition
-
-    let didComplete = expectation(description: "Did complete")
-    window.rootViewController!.present(presentedViewController, animated: true) {
-      didComplete.fulfill()
-    }
-
-    waitForExpectations(timeout: 0.1)
-
-    XCTAssertFalse(transition.startWasInvoked)
-    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
-  }
-
-  func testTransitionFallbackToSelfDoesComplete() {
-    let presentedViewController = UIViewController()
-    let transition = FallbackTransition()
-    presentedViewController.transitionController.transition = transition
-
-    let didComplete = expectation(description: "Did complete")
-    window.rootViewController!.present(presentedViewController, animated: true) {
-      didComplete.fulfill()
-    }
-
-    waitForExpectations(timeout: 0.1)
-
-    XCTAssertTrue(transition.startWasInvoked)
     XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
   }
 }
 
+final class InstantCompletionTransition: NSObject, Transition {
+  func start(with context: TransitionContext) {
+    context.transitionDidEnd()
+  }
+}
