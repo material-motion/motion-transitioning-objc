@@ -1,7 +1,21 @@
-# #develop#
+# 3.3.0
 
- TODO: Enumerate changes.
+This minor release deprecates some behavior and replaces it with a new API.
 
+## New deprecations
+
+- `MDMTransitionWithFallback` nil behavior is now deprecated. In order to fall back to system
+transitions you must now conform to `MDMTransitionWithFeasibility` and return NO.
+
+## Source changes
+
+* [Backport MDMTransitionWithFeasibility from the v4.0.0 release for v3.1 clients.](https://github.com/material-motion/transitioning-objc/commit/1f994d03c7971001cc8faafe61b3ed2f55bca118) (Jeff Verkoeyen)
+
+## API changes
+
+### MDMTransitionWithFeasibility
+
+*new* protocol `MDMTransitionWithFeasibility`.
 
 # 3.2.1
 
