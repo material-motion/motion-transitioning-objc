@@ -20,6 +20,24 @@ import MotionTransitioning
 // Transitions must be NSObject types that conform to the Transition protocol.
 final class FadeTransition: NSObject, Transition {
 
+  enum Style {
+    case fadeIn
+    case fadeOut
+  }
+
+  let target: TransitionTarget
+  let style: Style
+  init(target: TransitionTarget, style: Style = .fadeIn) {
+    self.target = target
+    self.style = style
+
+    super.init()
+  }
+
+  convenience override init() {
+    self.init(target: .foreView)
+  }
+
   // The sole method we're expected to implement, start is invoked each time the view controller is
   // presented or dismissed.
   func start(with context: TransitionContext) {
@@ -34,22 +52,28 @@ final class FadeTransition: NSObject, Transition {
 
     fade.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
 
-    // Define our animation assuming that we're going forward (presenting)...
-    fade.fromValue = 0
-    fade.toValue = 1
+    switch style {
+    case .fadeIn:
+      fade.fromValue = 0
+      fade.toValue = 1
+    case .fadeOut:
+      fade.fromValue = 1
+      fade.toValue = 0
+    }
 
-    // ...and reverse it if we're going backwards (dismissing).
     if context.direction == .backward {
       let swap = fade.fromValue
       fade.fromValue = fade.toValue
       fade.toValue = swap
     }
 
+    let targetView = target.resolve(with: context)
+
     // Add the animation...
-    context.foreViewController.view.layer.add(fade, forKey: fade.keyPath)
+    targetView.layer.add(fade, forKey: fade.keyPath)
 
     // ...and ensure that our model layer reflects the final value.
-    context.foreViewController.view.layer.setValue(fade.toValue, forKeyPath: fade.keyPath!)
+    targetView.layer.setValue(fade.toValue, forKeyPath: fade.keyPath!)
 
     CATransaction.commit()
   }
