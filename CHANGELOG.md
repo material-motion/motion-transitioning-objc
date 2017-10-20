@@ -35,6 +35,7 @@ if let toolbar = foreDelegate.toolbar(for: self) {
 
 ## Source changes
 
+* [Add nullability annotations to MDMTransitionNavigationControllerDelegate. (#46)](https://github.com/material-motion/motion-transitioning-objc/commit/302d3c4ec526ffa942d23937fdfe8ef5163d473d) (featherless)
 * [Update Xcode build settings to Xcode 9 warnings and resolve build error.](https://github.com/material-motion/transitioning-objc/commit/5ed85cdc795ae6660901c5e2ae237732f04649e1) (Jeff Verkoeyen)
 * [Rework multi-transition support using composition. (#43)](https://github.com/material-motion/transitioning-objc/commit/0b57361557476c7d3ecb8f4c9878da21a2e735ab) (featherless)
 * [Fix the Swift symbol name for MDMTransitionDirection. (#44)](https://github.com/material-motion/transitioning-objc/commit/4cdcf4ca0324a1f83d572440887fe5a5d18ee00b) (featherless)
