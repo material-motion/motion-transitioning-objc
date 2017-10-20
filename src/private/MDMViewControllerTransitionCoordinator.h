@@ -14,33 +14,29 @@
  limitations under the License.
  */
 
-#import <Foundation/Foundation.h>
-
 #import "MDMTransitionContext.h"
 
 @protocol MDMTransition;
-@protocol MDMViewControllerTransitionContextDelegate;
+@protocol MDMViewControllerTransitionCoordinatorDelegate;
 
-@interface MDMViewControllerTransitionContext : NSObject <MDMTransitionContext, UIViewControllerAnimatedTransitioning>
+@interface MDMViewControllerTransitionCoordinator : NSObject <UIViewControllerAnimatedTransitioning>
 
-- (nonnull instancetype)initWithTransition:(nonnull id<MDMTransition>)transition
+- (nonnull instancetype)initWithTransition:(nonnull NSObject<MDMTransition> *)transition
                                  direction:(MDMTransitionDirection)direction
                       sourceViewController:(nullable UIViewController *)sourceViewController
                         backViewController:(nonnull UIViewController *)backViewController
                         foreViewController:(nonnull UIViewController *)foreViewController
-                    presentationController:(nullable UIPresentationController *)presentationController
-    NS_DESIGNATED_INITIALIZER;
-
+                    presentationController:(nullable UIPresentationController *)presentationController;
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
-@property(nonatomic, strong, nullable) id<MDMTransition> transition;
+- (nonnull NSArray<NSObject<MDMTransition> *> *)activeTransitions;
 
-@property(nonatomic, weak, nullable) id<MDMViewControllerTransitionContextDelegate> delegate;
+@property(nonatomic, weak, nullable) id<MDMViewControllerTransitionCoordinatorDelegate> delegate;
 
 @end
 
-@protocol MDMViewControllerTransitionContextDelegate
+@protocol MDMViewControllerTransitionCoordinatorDelegate
 
-- (void)transitionDidCompleteWithContext:(nonnull MDMViewControllerTransitionContext *)context;
+- (void)transitionDidCompleteWithCoordinator:(nonnull MDMViewControllerTransitionCoordinator *)coordinator;
 
 @end

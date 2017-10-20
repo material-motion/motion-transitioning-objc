@@ -17,7 +17,34 @@
 import XCTest
 import MotionTransitioning
 
-class TransitionTests: XCTestCase {
+final class DurationMemoryTransition: NSObject, Transition {
+  var recordedDuration: TimeInterval?
+  func start(with context: TransitionContext) {
+    recordedDuration = context.duration
+
+    context.transitionDidEnd()
+  }
+}
+
+final class CustomDurationMemoryTransition: NSObject, TransitionWithCustomDuration {
+  let duration: TimeInterval
+  init(with duration: TimeInterval) {
+    self.duration = duration
+  }
+
+  func transitionDuration(with context: TransitionContext) -> TimeInterval {
+    return duration
+  }
+
+  var recordedDuration: TimeInterval?
+  func start(with context: TransitionContext) {
+    recordedDuration = context.duration
+
+    context.transitionDidEnd()
+  }
+}
+
+class TransitionWithCustomDurationTests: XCTestCase {
 
   private var window: UIWindow!
   override func setUp() {
@@ -30,40 +57,9 @@ class TransitionTests: XCTestCase {
     window = nil
   }
 
-  func testTransitionDidEndDoesComplete() {
+  func testDefaultDurationIsProvidedViaContext() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition = InstantCompletionTransition()
-
-    let didComplete = expectation(description: "Did complete")
-    window.rootViewController!.present(presentedViewController, animated: true) {
-      didComplete.fulfill()
-    }
-
-    waitForExpectations(timeout: 0.1)
-
-    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
-  }
-
-  func testTransitionCompositionDoesComplete() {
-    let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition = CompositeTransition(transitions: [
-      InstantCompletionTransition(),
-      InstantCompletionTransition()
-    ])
-
-    let didComplete = expectation(description: "Did complete")
-    window.rootViewController!.present(presentedViewController, animated: true) {
-      didComplete.fulfill()
-    }
-
-    waitForExpectations(timeout: 0.1)
-
-    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
-  }
-
-  func testTransitionFallbackToOtherTransitionDoesComplete() {
-    let presentedViewController = UIViewController()
-    let transition = FallbackTransition(to: InstantCompletionTransition())
+    let transition = DurationMemoryTransition()
     presentedViewController.transitionController.transition = transition
 
     let didComplete = expectation(description: "Did complete")
@@ -73,13 +69,16 @@ class TransitionTests: XCTestCase {
 
     waitForExpectations(timeout: 0.1)
 
-    XCTAssertFalse(transition.startWasInvoked)
+    // TODO: This should be an extern const in the library.
+    XCTAssertEqual(transition.recordedDuration, 0.35)
+
     XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
   }
 
-  func testTransitionFallbackToSelfDoesComplete() {
+  func testCustomDurationIsProvidedViaContext() {
     let presentedViewController = UIViewController()
-    let transition = FallbackTransition()
+    let customDuration: TimeInterval = 0.1
+    let transition = CustomDurationMemoryTransition(with: customDuration)
     presentedViewController.transitionController.transition = transition
 
     let didComplete = expectation(description: "Did complete")
@@ -89,7 +88,8 @@ class TransitionTests: XCTestCase {
 
     waitForExpectations(timeout: 0.1)
 
-    XCTAssertTrue(transition.startWasInvoked)
+    XCTAssertEqual(transition.recordedDuration, customDuration)
+
     XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
   }
 }

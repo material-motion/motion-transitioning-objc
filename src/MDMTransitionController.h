@@ -32,8 +32,8 @@ NS_SWIFT_NAME(TransitionController)
 
  If no transition is provided then a default UIKit transition will be used.
 
- Side effects: if the transition conforms to MDMTransitionWithPresentation, then the transition's
- default modal presentation style will be queried and assigned to the associated view controller's
+ If the transition conforms to MDMTransitionWithPresentation, then the transition's default modal
+ presentation style will be queried and assigned to the associated view controller's
  `modalPresentationStyle` property.
  */
 @property(nonatomic, strong, nullable) id<MDMTransition> transition;

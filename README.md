@@ -14,7 +14,7 @@ you can pick the custom transition you want to use:
 ```swift
 let viewController = MyViewController()
 viewController.transitionController.transition = CustomTransition()
-present(modalViewController, animated: true)
+present(viewController, animated: true)
 ```
 
 ```objc
@@ -102,7 +102,7 @@ commands:
 ## Guides
 
 1. [Architecture](#architecture)
-2. [How to create a simple transition](#how-to-create-a-simple-transition)
+2. [How to create a fade transition](#how-to-create-a-fade-transition)
 3. [How to customize presentation](#how-to-customize-presentation)
 4. [How to customize navigation controller transitions](#how-to-customize-navigation-controller-transitions)
 
@@ -118,23 +118,27 @@ MotionTransitioning provides a thin layer atop these protocols with the followin
 - Every view controller has its own **transition controller**. This encourages choosing the
   transition based on the context.
 - Transitions are represented in terms of **backward/forward** rather than from/to. When presenting,
-  we're moving forward. When dismissing, we're moving backward. This makes it easier to refer to
-  each "side" of a transition consistently.
-- Transition objects can customize their behavior by conforming to more `TransitionWith*` protocols.
-  This protocol-oriented design is more Swift-friendly than a variety of optional methods on a
-  protocol.
-- But most importantly: **this library handles the plumbing, allowing you to focus on the motion**.
+  we're moving forward. When dismissing, we're moving backward. This allows transition code to be
+  written with fewer conditional branches of logic.
+- Transition objects can customize their behavior by conforming to the family of `TransitionWith*` protocols.
 
-### How to create a simple transition
+### How to create a fade transition
 
-In this guide we'll create scaffolding for a simple transition.
+We'll create a new fade transition so that the following lines of code customizes the presentation
+and dismissal of our view controller:
+
+```swift
+let viewController = MyViewController()
+viewController.transitionController.transition = FadeTransition()
+present(viewController, animated: true)
+```
 
 #### Step 1: Define a new Transition type
 
-Transitions must be `NSObject` types that conform to the `Transition` protocol.
+A transition is an `NSObject` subclass that conforms to the `Transition` protocol.
 
-The sole method we're expected to implement, `start`, is invoked each time the view controller is
-presented or dismissed.
+The only method you have to implement is `start(with context:)`. This method is invoked each time
+the associated view controller is presented or dismissed.
 
 ```swift
 final class FadeTransition: NSObject, Transition {
@@ -146,7 +150,11 @@ final class FadeTransition: NSObject, Transition {
 
 #### Step 2: Invoke the completion handler once all animations are complete
 
-If using Core Animation explicitly:
+Every transition is provided with a transition context. The transition context must be told when the
+transition's motion has completed so that the context can then inform UIKit of the view controller
+transition's completion.
+
+If using explicit Core Animation animations:
 
 ```swift
 final class FadeTransition: NSObject, Transition {
@@ -164,7 +172,7 @@ final class FadeTransition: NSObject, Transition {
 }
 ```
 
-If using UIView implicit animations:
+If using implicit UIView animations:
 
 ```swift
 final class FadeTransition: NSObject, Transition {
@@ -181,41 +189,57 @@ final class FadeTransition: NSObject, Transition {
 
 #### Step 3: Implement the motion
 
-With the basic scaffolding in place, you can now implement your motion.
+With the basic scaffolding in place, you can now implement your motion. For simplicity's sake we'll
+use implicit UIView animations in this example to build our motion, but you're free to use any
+animation system you prefer.
+
+```swift
+final class FadeTransition: NSObject, Transition {
+  func start(with context: TransitionContext) {
+    // This is a fairly rudimentary way to calculate the values on either side of the transition.
+    // You may want to try different patterns until you find one that you prefer.
+    // Also consider trying the MotionAnimator library provided by the Material Motion team:
+    // https://github.com/material-motion/motion-animator-objc
+    let backOpacity = 0
+    let foreOpacity = 1
+    let initialOpacity = context.direction == .forward ? backOpacity : foreOpacity
+    let finalOpacity = context.direction == .forward ? foreOpacity : backOpacity
+    context.foreViewController.view.alpha = initialOpacity
+    UIView.animate(withDuration: context.duration, animations: {
+      context.foreViewController.view.alpha = finalOpacity
+
+    }, completion: { didComplete in
+      context.transitionDidEnd()
+    })
+  }
+}
+```
 
 ### How to customize presentation
 
-You'll customize the presentation of a transition when you need to do any of the following:
+Customize the presentation of a transition when you need to do any of the following:
 
 - Add views, such as dimming views, that live beyond the lifetime of the transition.
 - Change the destination frame of the presented view controller.
 
-#### Step 1: Subclass UIPresentationController
+You have two options for customizing presentation:
 
-You must subclass UIPresentationController in order to implement your custom behavior. If the user
-of your transition can customize any presentation behavior then you'll want to define a custom
-initializer.
+1. Use the provided `TransitionPresentationController` API.
+2. Build your own UIPresentationController subclass.
 
-> Note: Avoid storing the transition context in your presentation controller. Presentation
-> controllers live for as long as their associated view controller, while the transition context is
-> only valid while a transition is active. Each presentation and dismissal will receive its own
-> unique transition context. Storing the context in the presentation controller would keep the
-> context alive longer than it's meant to.
+#### Option 2: Subclass UIPresentationController
 
-Override any `UIPresentationController` methods you'll need in order to implement your motion.
+Start by defining a new presentation controller type:
 
 ```swift
 final class MyPresentationController: UIPresentationController {
 }
 ```
 
-#### Step 2: Implement TransitionWithPresentation on your transition
-
-This ensures that your transition implement the required methods for presentation.
-
-Presentation will only be customized if you return `.custom` from the
-`defaultModalPresentationStyle` method and a non-nil `UIPresentationController` subclass from the
-`presentationController` method.
+Your Transition type must conform to `TransitionWithPresentation` in order to customize
+presentation. Return your custom presentation controller class from the required methods and be sure
+to return the `.custom` presentation style, otherwise UIKit will not use your presentation
+controller.
 
 ```swift
 extension VerticalSheetTransition: TransitionWithPresentation {
@@ -231,15 +255,14 @@ extension VerticalSheetTransition: TransitionWithPresentation {
 }
 ```
 
-#### Optional Step 3: Implement Transition on your presentation controller
-
 If your presentation controller needs to animate anything, you can conform to the `Transition`
 protocol in order to receive a `start` invocation each time a transition begins. The presentation
 controller's `start` will be invoked before the transition's `start`.
 
-> Note: It's possible for your presentation controller and your transition to have different ideas
-> of when a transition has completed, so consider which object should be responsible for invoking
-> `transitionDidEnd`. The `Transition` object is usually the one that calls this method.
+> Note: Just like your transition, your presentation controller must eventually call
+> `transitionDidEnd` on its context, otherwise your transition will not complete. This is because
+> the transitioning controller waits until all associated transitions have completed before
+> informing UIKit of the view controller transition's completion.
 
 ```swift
 extension MyPresentationController: Transition {

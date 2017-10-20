@@ -38,20 +38,20 @@ NS_SWIFT_NAME(TransitionNavigationControllerDelegate)
 
  Only supported methods are exposed.
  */
-+ (instancetype)sharedInstance;
++ (nonnull instancetype)sharedInstance;
 
 /**
  Can be set as a navigation controller's delegate.
  */
-+ (id<UINavigationControllerDelegate>)sharedDelegate;
++ (nonnull id<UINavigationControllerDelegate>)sharedDelegate;
 
 #pragma mark <UINavigationControllerDelegate> Support
 
-- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                  animationControllerForOperation:(UINavigationControllerOperation)operation
-                                               fromViewController:(UIViewController *)fromVC
-                                                 toViewController:(UIViewController *)toVC;
-- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
-                         interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController;
+- (nullable id<UIViewControllerAnimatedTransitioning>)navigationController:(nonnull UINavigationController *)navigationController
+                                           animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                        fromViewController:(nonnull UIViewController *)fromVC
+                                                          toViewController:(nonnull UIViewController *)toVC;
+- (nullable id<UIViewControllerInteractiveTransitioning>)navigationController:(nonnull UINavigationController *)navigationController
+                                  interactionControllerForAnimationController:(nonnull id<UIViewControllerAnimatedTransitioning>)animationController;
 
 @end
