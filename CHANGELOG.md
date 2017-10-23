@@ -1,7 +1,12 @@
-# #develop#
+# 4.0.1
 
- TODO: Enumerate changes.
+This patch release resolves a build warning and migrates the project's continuous integration to
+bazel and kokoro.
 
+## Source changes
+
+* [Replace arc with bazel and kokoro build runner for continuous integration. (#47)](https://github.com/material-motion/motion-transitioning-objc/commit/a40eb1667a4c5c9b13e3770c1bd98f0ca15d5b7d) (featherless)
+* [Reorder if statement to avoid nullability warning. (#48)](https://github.com/material-motion/motion-transitioning-objc/commit/0406d3c933574b0b9f3d7a0ae1cc3e7556640ccb) (ianegordon)
 
 # 4.0.0
 
