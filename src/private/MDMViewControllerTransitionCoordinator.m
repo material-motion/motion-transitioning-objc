@@ -255,13 +255,9 @@
     if ([transition respondsToSelector:@selector(canPerformTransitionWithContext:)]) {
       id<MDMTransitionWithFeasibility> withFeasibility = (id<MDMTransitionWithFeasibility>)transition;
       if (![withFeasibility canPerformTransitionWithContext:_root]) {
-        transition = nil;
+        self = nil;
+        return nil; // No active transitions means no need for a coordinator.
       }
-    }
-
-    if (!transition) {
-      self = nil;
-      return nil; // No active transitions means no need for a coordinator.
     }
   }
   return self;
