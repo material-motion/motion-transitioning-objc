@@ -66,6 +66,88 @@ class CustomPresentationExampleViewController: ExampleTableViewController {
   }
 }
 
+final class DragToDismissTransition: NSObject, Transition {
+  fileprivate let dismissGesture: UIPanGestureRecognizer
+  fileprivate let transition: Transition
+  init(transition: Transition, dismissGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()) {
+    self.transition = transition
+    self.dismissGesture = dismissGesture
+
+    super.init()
+
+    dismissGesture.addTarget(self, action: #selector(didPanToDismiss))
+  }
+
+  var dismiss: (() -> Void)?
+  var interactiveContext: TransitionInteractiveContext?
+  func didPanToDismiss(gestureRecognizer: UIPanGestureRecognizer) {
+    if gestureRecognizer.state == .began {
+      guard let dismiss = dismiss else {
+        return
+      }
+      dismiss()
+
+    } else if gestureRecognizer.state == .changed {
+      guard let interactiveContext = interactiveContext else {
+        return
+      }
+
+      interactiveContext.progress =
+          gestureRecognizer.translation(in: gestureRecognizer.view).y
+          / (interactiveContext.foreViewController.view.bounds.height)
+
+    } else if gestureRecognizer.state == .ended || gestureRecognizer.state == .cancelled {
+      guard let interactiveContext = interactiveContext else {
+        return
+      }
+
+      interactiveContext.canceled = gestureRecognizer.velocity(in: gestureRecognizer.view).y < 0
+
+      interactiveContext.interactiveStateDidChange()
+    }
+  }
+
+  func start(with context: TransitionContext) {
+    if dismissGesture.view == nil {
+      context.foreViewController.view.addGestureRecognizer(dismissGesture)
+    }
+
+    context.compose(with: transition)
+
+    context.transitionDidEnd()
+  }
+}
+
+extension DragToDismissTransition: TransitionWithInteraction {
+
+  func isInteractive() -> Bool {
+    return dismissGesture.state == .began || dismissGesture.state == .changed
+  }
+}
+
+extension DragToDismissTransition: TransitionWithPresentation {
+
+  // This method is invoked when we assign the transition to the transition controller. The result
+  // is assigned to the view controller's modalPresentationStyle property.
+  func defaultModalPresentationStyle() -> UIModalPresentationStyle {
+    guard let transitionWithPresentation = transition as? TransitionWithPresentation else {
+      return .fullScreen
+    }
+    return transitionWithPresentation.defaultModalPresentationStyle()
+  }
+
+  func presentationController(forPresented presented: UIViewController,
+                              presenting: UIViewController,
+                              source: UIViewController?) -> UIPresentationController? {
+    guard let transitionWithPresentation = transition as? TransitionWithPresentation else {
+      return nil
+    }
+    return transitionWithPresentation.presentationController(forPresented:presented,
+                                                             presenting:presenting,
+                                                             source:source)
+  }
+}
+
 final class VerticalSheetTransition: NSObject, Transition {
 
   // When provided, the transition will use a presentation controller to customize the presentation
@@ -96,10 +178,83 @@ final class VerticalSheetTransition: NSObject, Transition {
       shift.fromValue = shift.toValue
       shift.toValue = swap
     }
+    shift.beginTime = context.foreViewController.view.layer.convertTime(CACurrentMediaTime(), from: nil)
     context.foreViewController.view.layer.add(shift, forKey: shift.keyPath)
     context.foreViewController.view.layer.setValue(shift.toValue, forKeyPath: shift.keyPath!)
 
+    let layer = context.foreViewController.view.layer
+
+    context.interactionDidBegin {
+      animator.pauseAnimation()
+
+      shift.speed = 0
+      layer.add(shift, forKey: shift.keyPath)
+    }
+    context.interactionProgressDidChange { progress in
+      animator.factionComplete = progress
+
+      shift.timeOffset = TimeInterval(progress) * shift.duration
+      layer.add(shift, forKey: shift.keyPath)
+    }
+    context.interactionDidEnd { isReversed in
+      animator.isReversed = isReversed
+      animator.startAnimation()
+
+      if (isReversed) {
+        shift.toValue = shift.fromValue
+        shift.fromValue = layer.presentation()!.value(forKeyPath: shift.keyPath!)
+        shift.duration = shift.duration - shift.timeOffset
+      }
+
+      // Reconnect our layer with the render server's clock.
+      let pausedTime = shift.timeOffset
+      shift.speed = 1
+      shift.timeOffset = 0
+      shift.beginTime = 0
+      let timeSincePause = context.foreViewController.view.layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
+      shift.beginTime = timeSincePause
+
+      layer.add(shift, forKey: shift.keyPath)
+    }
+
     CATransaction.commit()
+
+    //
+    //    // Start off-screen...
+    //    var fromValue = context.containerView.bounds.height + context.foreViewController.view.layer.bounds.height / 2
+    //    // ...and shift on-screen.
+    //    var toValue = context.foreViewController.view.layer.position.y
+    //
+    //    if context.direction == .backward {
+    //      let swap = fromValue
+    //      fromValue = toValue
+    //      toValue = swap
+    //    }
+    //
+    //    if #available(iOS 10.0, *) {
+    //      context.foreViewController.view.center.y = fromValue
+    //      let animator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1.0) {
+    //        context.foreViewController.view.center.y = toValue
+    //      }
+    //      animator.addCompletion { _ in
+    //        context.transitionDidEnd()
+    //      }
+    //      animator.startAnimation()
+    //
+    //      context.interactionDidBegin {
+    //        animator.pauseAnimation()
+    //      }
+    //      context.interactionProgressDidChange { progress in
+    //        animator.fractionComplete = progress
+    //      }
+    //      context.interactionDidEnd { isReversed in
+    //        animator.isReversed = isReversed
+    //        animator.startAnimation()
+    //      }
+    //
+    //    } else {
+    //      context.transitionDidEnd()
+    //    }
   }
 }
 
@@ -165,7 +320,18 @@ extension CustomPresentationExampleViewController {
 extension CustomPresentationExampleViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let modal = ModalViewController()
-    modal.mdm_transitionController.transition = transitions[indexPath.row].transition
+    let transition = DragToDismissTransition(transition: transitions[indexPath.row].transition)
+    weak var weakModal = modal
+    transition.dismiss = {
+      guard let strongModal = weakModal else {
+        return
+      }
+      guard !strongModal.isBeingDismissed else {
+        return
+      }
+      strongModal.dismiss(animated: true)
+    }
+    modal.mdm_transitionController.transition = transition
     showDetailViewController(modal, sender: self)
   }
 }

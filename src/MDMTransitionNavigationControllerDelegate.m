@@ -18,6 +18,11 @@
 
 #import "MDMTransitionContext.h"
 #import "private/MDMViewControllerTransitionController.h"
+#import "private/MDMViewControllerTransitionCoordinator.h"
+
+@protocol MDMIsInteractiveResponder
+- (BOOL)isInteractive;
+@end
 
 @interface MDMTransitionNavigationControllerDelegate () <UINavigationControllerDelegate>
 @end
@@ -74,7 +79,9 @@
 
 - (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
                          interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController {
-  if ([animationController conformsToProtocol:@protocol(UIViewControllerInteractiveTransitioning)]) {
+  if ([animationController conformsToProtocol:@protocol(UIViewControllerInteractiveTransitioning)]
+      && [animationController respondsToSelector:@selector(isInteractive)]
+      && [(id<MDMIsInteractiveResponder>)animationController isInteractive]) {
     return (id<UIViewControllerInteractiveTransitioning>)animationController;
   }
   return nil;

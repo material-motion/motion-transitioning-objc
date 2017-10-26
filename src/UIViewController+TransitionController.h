@@ -18,6 +18,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol MDMTransitionController;
+@protocol MDMInteractiveTransitionContext;
 
 @interface UIViewController (MDMTransitionController)
 

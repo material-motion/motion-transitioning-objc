@@ -65,6 +65,16 @@
   return definitelyFullscreen;
 }
 
+- (void)presentationTransitionWillBegin {
+  [super presentationTransitionWillBegin];
+
+  _scrimView = [[UIView alloc] initWithFrame:self.containerView.bounds];
+  self.scrimView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
+                                     | UIViewAutoresizingFlexibleHeight);
+  self.scrimView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.3f];
+  [self.containerView insertSubview:self.scrimView belowSubview:self.presentedViewController.view];
+}
+
 - (void)dismissalTransitionWillBegin {
   if (!self.presentedViewController.mdm_transitionController.activeTransition) {
     [self.presentedViewController.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
@@ -97,15 +107,6 @@
 }
 
 - (void)startWithContext:(NSObject<MDMTransitionContext> *)context {
-  if (!self.scrimView) {
-    _scrimView = [[UIView alloc] initWithFrame:context.containerView.bounds];
-    self.scrimView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
-                                       | UIViewAutoresizingFlexibleHeight);
-    self.scrimView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.3f];
-    [context.containerView insertSubview:self.scrimView
-                            belowSubview:context.foreViewController.view];
-  }
-
   if ([self.animationController respondsToSelector:@selector(presentationController:startWithContext:)]) {
     [self.animationController presentationController:self startWithContext:context];
   } else {

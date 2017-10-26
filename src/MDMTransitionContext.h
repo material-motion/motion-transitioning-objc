@@ -101,4 +101,18 @@ NS_SWIFT_NAME(TransitionContext)
  */
 - (void)deferToCompletion:(void (^ _Nonnull)(void))work;
 
+- (void)interactionDidBegin:(void (^ _Nonnull)(void))work;
+- (void)interactionDidEnd:(void (^ _Nonnull)(BOOL isReversed, CGFloat progress))work;
+- (void)interactionProgressDidChange:(void (^ _Nonnull)(CGFloat progress))work;
+
+@end
+
+NS_SWIFT_NAME(TransitionInteractiveContext)
+@protocol MDMTransitionInteractiveContext <MDMTransitionContext>
+
+@property(nonatomic, assign) BOOL canceled;
+@property(nonatomic, assign) CGFloat progress;
+
+- (void)interactiveStateDidChange;
+
 @end

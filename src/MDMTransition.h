@@ -15,8 +15,10 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "MDMTransitionContext.h"
 
 @protocol MDMTransitionContext;
+@protocol MDMInteractiveTransitionContext;
 
 /**
  A transition coordinates the animated presentation or dismissal of a view controller.
@@ -134,3 +136,13 @@ NS_SWIFT_NAME(presentationController(forPresented:presenting:source:));
 // clang-format on
 
 @end
+
+NS_SWIFT_NAME(TransitionWithInteraction)
+@protocol MDMTransitionWithInteraction <MDMTransition>
+
+@property(nonatomic, weak, nullable) id<MDMTransitionInteractiveContext> interactiveContext;
+
+- (BOOL)isInteractive;
+
+@end
+

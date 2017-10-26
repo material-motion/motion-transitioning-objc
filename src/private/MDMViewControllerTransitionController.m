@@ -34,6 +34,7 @@
 }
 
 @synthesize transition = _transition;
+@synthesize interactionController = _interactionController;
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController {
   self = [super init];
@@ -95,6 +96,20 @@
   return _coordinator;
 }
 
+- (nullable id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator {
+  if ([_coordinator isInteractive]) {
+    return _coordinator;
+  }
+  return nil;
+}
+
+- (nullable id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator {
+  if ([_coordinator isInteractive]) {
+    return _coordinator;
+  }
+  return nil;
+}
+
 // Presentation
 
 - (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented
@@ -134,11 +149,11 @@
   NSAssert(!_coordinator, @"A transition is already active.");
 
   _coordinator = [[MDMViewControllerTransitionCoordinator alloc] initWithTransition:self.transition
-                                                                                direction:direction
-                                                                     sourceViewController:source
-                                                                       backViewController:back
-                                                                       foreViewController:fore
-                                                                   presentationController:_presentationController];
+                                                                          direction:direction
+                                                               sourceViewController:source
+                                                                 backViewController:back
+                                                                 foreViewController:fore
+                                                             presentationController:_presentationController];
   _coordinator.delegate = self;
 }
 

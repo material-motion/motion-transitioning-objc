@@ -19,7 +19,10 @@
 @protocol MDMTransition;
 @protocol MDMViewControllerTransitionCoordinatorDelegate;
 
-@interface MDMViewControllerTransitionCoordinator : NSObject <UIViewControllerAnimatedTransitioning>
+@interface MDMViewControllerTransitionCoordinator : UIPercentDrivenInteractiveTransition <
+  UIViewControllerAnimatedTransitioning,
+  UIViewControllerInteractiveTransitioning
+>
 
 - (nonnull instancetype)initWithTransition:(nonnull NSObject<MDMTransition> *)transition
                                  direction:(MDMTransitionDirection)direction
@@ -30,6 +33,8 @@
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
 - (nonnull NSArray<NSObject<MDMTransition> *> *)activeTransitions;
+
+- (BOOL)isInteractive;
 
 @property(nonatomic, weak, nullable) id<MDMViewControllerTransitionCoordinatorDelegate> delegate;
 

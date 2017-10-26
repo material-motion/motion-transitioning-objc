@@ -21,18 +21,56 @@
 @class MDMViewControllerTransitionContextNode;
 
 @protocol MDMViewControllerTransitionContextNodeParent <NSObject>
+- (void)childNode:(MDMViewControllerTransitionContextNode *)childNode setCanceled:(BOOL)canceled;
+- (void)childNode:(MDMViewControllerTransitionContextNode *)childNode setProgress:(CGFloat)progress;
+- (void)childNodeInteractionStateDidChange:(MDMViewControllerTransitionContextNode *)childNode;
 - (void)childNodeTransitionDidEnd:(MDMViewControllerTransitionContextNode *)childNode;
 @end
 
-@interface MDMViewControllerTransitionContextNode : NSObject <MDMTransitionContext, MDMViewControllerTransitionContextNodeParent>
+@interface MDMViewControllerTransitionContextNode : NSObject <
+  MDMTransitionContext,
+  MDMTransitionInteractiveContext,
+  MDMViewControllerTransitionContextNodeParent
+>
 @property(nonatomic, strong) id<UIViewControllerContextTransitioning> transitionContext;
 @property(nonatomic, strong, readonly) id<MDMTransition> transition;
 @property(nonatomic, copy, readonly) NSMutableArray<MDMViewControllerTransitionContextNode *> *children;
 @end
 
+@interface MDMViewControllerTransitionState : NSObject
+@property(nonatomic) MDMTransitionDirection direction;
+@property(nonatomic) BOOL canceled;
+@property(nonatomic) CGFloat progress;
+@property(nonatomic, strong, readonly) NSMutableArray *completionBlocks;
+@property(nonatomic, strong, readonly) NSMutableArray *interactionDidBeginBlocks;
+@property(nonatomic, strong, readonly) NSMutableArray *interactionDidEndBlocks;
+@property(nonatomic, strong, readonly) NSMutableArray *interactionProgressDidChangeBlocks;
+@end
+
+@implementation MDMViewControllerTransitionState
+
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    _completionBlocks = [NSMutableArray array];
+    _interactionDidBeginBlocks = [NSMutableArray array];
+    _interactionDidEndBlocks = [NSMutableArray array];
+    _interactionProgressDidChangeBlocks = [NSMutableArray array];
+  }
+  return self;
+}
+
+- (void)removeAllObjects {
+  [_completionBlocks removeAllObjects];
+  [_interactionDidBeginBlocks removeAllObjects];
+  [_interactionDidEndBlocks removeAllObjects];
+  [_interactionProgressDidChangeBlocks removeAllObjects];
+}
+
+@end
+
 @implementation MDMViewControllerTransitionContextNode {
-  // Every node points to the same array in memory.
-  NSMutableArray *_sharedCompletionBlocks;
+  MDMViewControllerTransitionState *_sharedState;
 
   BOOL _hasStarted;
   BOOL _didEnd;
@@ -40,31 +78,33 @@
 }
 
 @synthesize duration = _duration;
-@synthesize direction = _direction;
 @synthesize sourceViewController = _sourceViewController;
 @synthesize backViewController = _backViewController;
 @synthesize foreViewController = _foreViewController;
 @synthesize presentationController = _presentationController;
 
 - (instancetype)initWithTransition:(id<MDMTransition>)transition
-                         direction:(MDMTransitionDirection)direction
               sourceViewController:(UIViewController *)sourceViewController
                 backViewController:(UIViewController *)backViewController
                 foreViewController:(UIViewController *)foreViewController
             presentationController:(UIPresentationController *)presentationController
-            sharedCompletionBlocks:(NSMutableArray *)sharedCompletionBlocks
+                        sharedWork:(MDMViewControllerTransitionState *)sharedWork
                             parent:(id<MDMViewControllerTransitionContextNodeParent>)parent {
   self = [super init];
   if (self) {
     _children = [NSMutableArray array];
     _transition = transition;
-    _direction = direction;
     _sourceViewController = sourceViewController;
     _backViewController = backViewController;
     _foreViewController = foreViewController;
     _presentationController = presentationController;
-    _sharedCompletionBlocks = sharedCompletionBlocks;
+    _sharedState = sharedWork;
     _parent = parent;
+
+    if ([_transition respondsToSelector:@selector(setInteractiveContext:)]) {
+      id<MDMTransitionWithInteraction> withInteraction = (id<MDMTransitionWithInteraction>)_transition;
+      withInteraction.interactiveContext = self;
+    }
   }
   return self;
 }
@@ -74,12 +114,11 @@
 - (MDMViewControllerTransitionContextNode *)spawnChildWithTransition:(id<MDMTransition>)transition {
   MDMViewControllerTransitionContextNode *node =
     [[MDMViewControllerTransitionContextNode alloc] initWithTransition:transition
-                                                             direction:_direction
                                                   sourceViewController:_sourceViewController
                                                     backViewController:_backViewController
                                                     foreViewController:_foreViewController
                                                 presentationController:_presentationController
-                                                sharedCompletionBlocks:_sharedCompletionBlocks
+                                                            sharedWork:_sharedState
                                                                 parent:self];
   node.transitionContext = _transitionContext;
   return node;
@@ -96,6 +135,17 @@
 
   if (!anyChildActive && _didEnd) { // Inform our parent of completion.
     [_parent childNodeTransitionDidEnd:self];
+  }
+}
+
+- (void)tearDown {
+  if ([_transition respondsToSelector:@selector(setInteractiveContext:)]) {
+    id<MDMTransitionWithInteraction> withInteraction = (id<MDMTransitionWithInteraction>)_transition;
+    withInteraction.interactiveContext = nil;
+  }
+
+  for (MDMViewControllerTransitionContextNode *child in _children) {
+    [child tearDown];
   }
 }
 
@@ -121,6 +171,23 @@
 
     [self checkAndNotifyOfCompletion];
   }
+}
+
+- (BOOL)isInteractive {
+  if ([_transition respondsToSelector:@selector(isInteractive)]) {
+    id<MDMTransitionWithInteraction> withInteraction = (id<MDMTransitionWithInteraction>)_transition;
+    if ([withInteraction isInteractive]) {
+      return YES;
+    }
+  }
+
+  for (MDMViewControllerTransitionContextNode *child in _children) {
+    if ([child isInteractive]) {
+      return YES;
+    }
+  }
+
+  return NO;
 }
 
 - (NSArray *)activeTransitions {
@@ -164,13 +231,51 @@
   _transition = transition;
 }
 
+#pragma mark - MDMTransitionInteractiveContext
+
+- (BOOL)canceled {
+  return _sharedState.canceled;
+}
+
+- (void)setCanceled:(BOOL)canceled {
+  [_parent childNode:self setCanceled:canceled];
+}
+
+- (CGFloat)progress {
+  return _sharedState.progress;
+}
+
+- (void)setProgress:(CGFloat)progress {
+  [_parent childNode:self setProgress:progress];
+}
+
+- (void)interactiveStateDidChange {
+  [_parent childNodeInteractionStateDidChange:self];
+}
+
 #pragma mark - MDMViewControllerTransitionContextNodeDelegate
+
+- (void)childNode:(MDMViewControllerTransitionContextNode *)childNode setCanceled:(BOOL)canceled {
+  [_parent childNode:self setCanceled:canceled];
+}
+
+- (void)childNode:(MDMViewControllerTransitionContextNode *)childNode setProgress:(CGFloat)progress {
+  [_parent childNode:self setProgress:progress];
+}
 
 - (void)childNodeTransitionDidEnd:(MDMViewControllerTransitionContextNode *)contextNode {
   [self checkAndNotifyOfCompletion];
 }
 
+- (void)childNodeInteractionStateDidChange:(MDMViewControllerTransitionContextNode *)childNode {
+  [_parent childNodeInteractionStateDidChange:self];
+}
+
 #pragma mark - MDMTransitionContext
+
+- (MDMTransitionDirection)direction {
+  return _sharedState.direction;
+}
 
 - (void)composeWithTransition:(id<MDMTransition>)transition {
   MDMViewControllerTransitionContextNode *child = [self spawnChildWithTransition:transition];
@@ -187,7 +292,7 @@
 }
 
 - (void)deferToCompletion:(void (^)(void))work {
-  [_sharedCompletionBlocks addObject:[work copy]];
+  [_sharedState.completionBlocks addObject:[work copy]];
 }
 
 - (void)transitionDidEnd {
@@ -199,17 +304,30 @@
   [self checkAndNotifyOfCompletion];
 }
 
+- (void)interactionDidBegin:(void (^)(void))work {
+  [_sharedState.interactionDidBeginBlocks addObject:[work copy]];
+}
+
+- (void)interactionDidEnd:(void (^)(BOOL, CGFloat))work {
+  [_sharedState.interactionDidEndBlocks addObject:[work copy]];
+}
+
+- (void)interactionProgressDidChange:(void (^)(CGFloat))work {
+  [_sharedState.interactionProgressDidChangeBlocks addObject:[work copy]];
+}
+
 @end
 
 @interface MDMViewControllerTransitionCoordinator() <MDMViewControllerTransitionContextNodeParent>
 @end
 
 @implementation MDMViewControllerTransitionCoordinator {
-  MDMTransitionDirection _direction;
+  MDMTransitionDirection _initialDirection;
   UIPresentationController *_presentationController;
 
   MDMViewControllerTransitionContextNode *_root;
-  NSMutableArray *_completionBlocks;
+  MDMViewControllerTransitionState *_sharedState;
+  BOOL _lastPropagatedInteractiveState;
 
   id<UIViewControllerContextTransitioning> _transitionContext;
 }
@@ -222,32 +340,28 @@
             presentationController:(UIPresentationController *)presentationController {
   self = [super init];
   if (self) {
-    _direction = direction;
+    _initialDirection = direction;
     _presentationController = presentationController;
-
-    _completionBlocks = [NSMutableArray array];
-
-    // Build our contexts:
+    _sharedState = [[MDMViewControllerTransitionState alloc] init];
+    _sharedState.direction = direction;
 
     _root = [[MDMViewControllerTransitionContextNode alloc] initWithTransition:transition
-                                                                     direction:direction
                                                           sourceViewController:sourceViewController
                                                             backViewController:backViewController
                                                             foreViewController:foreViewController
                                                         presentationController:presentationController
-                                                        sharedCompletionBlocks:_completionBlocks
+                                                                    sharedWork:_sharedState
                                                                         parent:self];
 
     if (_presentationController
         && [_presentationController respondsToSelector:@selector(startWithContext:)]) {
       MDMViewControllerTransitionContextNode *presentationNode =
         [[MDMViewControllerTransitionContextNode alloc] initWithTransition:(id<MDMTransition>)_presentationController
-                                                                 direction:direction
                                                       sourceViewController:sourceViewController
                                                         backViewController:backViewController
                                                         foreViewController:foreViewController
                                                     presentationController:presentationController
-                                                    sharedCompletionBlocks:_completionBlocks
+                                                                sharedWork:_sharedState
                                                                     parent:_root];
       [_root.children addObject:presentationNode];
     }
@@ -265,19 +379,106 @@
 
 #pragma mark - MDMViewControllerTransitionContextNodeDelegate
 
-- (void)childNodeTransitionDidEnd:(MDMViewControllerTransitionContextNode *)node {
-  if (_root != nil && _root == node) {
-    _root = nil;
+- (void)childNode:(MDMViewControllerTransitionContextNode *)node setCanceled:(BOOL)canceled {
+  if (_root == nil || _root != node) {
+    return;
+  }
 
-    for (void (^work)(void) in _completionBlocks) {
+  _sharedState.canceled = canceled;
+
+  if (_sharedState.canceled) {
+    NSLog(@"Transition is canceled");
+
+    _sharedState.direction = ((_initialDirection == MDMTransitionDirectionForward)
+                  ? MDMTransitionDirectionBackward
+                  : MDMTransitionDirectionForward);
+  } else {
+    NSLog(@"Transition is not canceled");
+    _sharedState.direction = _initialDirection;
+  }
+}
+
+- (void)childNode:(MDMViewControllerTransitionContextNode *)node setProgress:(CGFloat)progress {
+  if (_root == nil || _root != node) {
+    return;
+  }
+
+  _sharedState.progress = progress;
+
+  NSLog(@"Interactive progress changed to %@", @(progress));
+
+  [self updateInteractiveTransition:progress];
+
+  for (void (^work)(CGFloat) in _sharedState.interactionProgressDidChangeBlocks) {
+    work(progress);
+  }
+}
+
+- (void)childNodeTransitionDidEnd:(MDMViewControllerTransitionContextNode *)node {
+  if (_root == nil || _root != node) {
+    return;
+  }
+
+  NSLog(@"Transition did end");
+
+  // Unset any known strong references between the transition and our contexts.
+  [_root tearDown];
+
+  _root = nil;
+
+  for (void (^work)(void) in _sharedState.completionBlocks) {
+    work();
+  }
+  [_sharedState removeAllObjects];
+
+  [_transitionContext completeTransition:_initialDirection == _sharedState.direction];
+  _transitionContext = nil;
+
+  [_delegate transitionDidCompleteWithCoordinator:self];
+}
+
+- (void)childNodeInteractionStateDidChange:(MDMViewControllerTransitionContextNode *)node {
+  if (_root == nil || _root != node) {
+    return;
+  }
+
+  BOOL isInteractive = [_root isInteractive];
+  if (_lastPropagatedInteractiveState == isInteractive) {
+    return;
+  }
+
+  if (isInteractive) {
+    NSLog(@"Transition did become interactive");
+  } else {
+    NSLog(@"Transition stopped being interactive");
+  }
+  [self propagateInteractiveState];
+}
+
+- (void)propagateInteractiveState {
+  _lastPropagatedInteractiveState = [_root isInteractive];
+  if (_lastPropagatedInteractiveState) {
+    for (void (^work)(void) in _sharedState.interactionDidBeginBlocks) {
       work();
     }
-    [_completionBlocks removeAllObjects];
 
-    [_transitionContext completeTransition:true];
-    _transitionContext = nil;
+    if (@available(iOS 10.0, *)) {
+      if (!_transitionContext.isInteractive) {
+        [self pauseInteractiveTransition];
+      }
+    }
 
-    [_delegate transitionDidCompleteWithCoordinator:self];
+  } else {
+    if (_sharedState.canceled) {
+      [self cancelInteractiveTransition];
+
+    } else {
+      [self finishInteractiveTransition];
+    }
+
+    for (void (^work)(BOOL, CGFloat) in _sharedState.interactionDidEndBlocks) {
+      work(_sharedState.canceled, _sharedState.progress);
+    }
   }
 }
 
@@ -296,15 +497,30 @@
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
   _transitionContext = transitionContext;
 
+  NSLog(@"Transition is animating");
+
   [self initiateTransition];
 }
 
-// TODO(featherless): Implement interactive transitioning. Need to implement
-// UIViewControllerInteractiveTransitioning here and isInteractive and interactionController* in
-// MDMViewControllerTransitionController.
+#pragma mark - UIViewControllerInteractiveTransitioning
+
+- (void)startInteractiveTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
+  // super calls animateTransition: for us.
+  [super startInteractiveTransition:transitionContext];
+
+  NSLog(@"Transition is starting in interactive mode");
+
+  [self propagateInteractiveState];
+}
+
+#pragma mark - Public
 
 - (NSArray<NSObject<MDMTransition> *> *)activeTransitions {
   return [_root activeTransitions];
+}
+
+- (BOOL)isInteractive {
+  return [_root isInteractive];
 }
 
 #pragma mark - Private
@@ -336,7 +552,7 @@
     }
 
     if (toView.superview == nil) {
-      switch (_direction) {
+      switch (_sharedState.direction) {
         case MDMTransitionDirectionForward:
           [_transitionContext.containerView addSubview:toView];
           break;
