@@ -313,34 +313,42 @@
   _root.transitionContext = _transitionContext;
 
   UIViewController *from = [_transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-  if (from) {
+  UIView *fromView = [_transitionContext viewForKey:UITransitionContextFromViewKey];
+  if (fromView == nil) {
+    fromView = from.view;
+  }
+  if (fromView != nil && fromView == from.view) {
     CGRect finalFrame = [_transitionContext finalFrameForViewController:from];
     if (!CGRectIsEmpty(finalFrame)) {
-      from.view.frame = finalFrame;
+      fromView.frame = finalFrame;
     }
   }
 
   UIViewController *to = [_transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-  if (to) {
+  UIView *toView = [_transitionContext viewForKey:UITransitionContextToViewKey];
+  if (toView == nil) {
+    toView = to.view;
+  }
+  if (toView != nil && toView == to.view) {
     CGRect finalFrame = [_transitionContext finalFrameForViewController:to];
     if (!CGRectIsEmpty(finalFrame)) {
-      to.view.frame = finalFrame;
+      toView.frame = finalFrame;
     }
 
-    switch (_direction) {
-      case MDMTransitionDirectionForward:
-        [_transitionContext.containerView addSubview:to.view];
-        break;
+    if (toView.superview == nil) {
+      switch (_direction) {
+        case MDMTransitionDirectionForward:
+          [_transitionContext.containerView addSubview:toView];
+          break;
 
-      case MDMTransitionDirectionBackward:
-        if (!to.view.superview) {
-          [_transitionContext.containerView insertSubview:to.view atIndex:0];
-        }
-        break;
+        case MDMTransitionDirectionBackward:
+          [_transitionContext.containerView insertSubview:toView atIndex:0];
+          break;
+      }
     }
-
-    [to.view layoutIfNeeded];
   }
+
+  [toView layoutIfNeeded];
 
   [_root attemptFallback];
   [self anticipateOnlyExplicitAnimations];
