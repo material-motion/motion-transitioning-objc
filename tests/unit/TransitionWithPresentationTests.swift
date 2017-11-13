@@ -93,20 +93,54 @@ class TransitionWithPresentationTests: XCTestCase {
     XCTAssertEqual(window.rootViewController!.presentedViewController?.view.frame,
                    transition.presentationFrame)
   }
+
+  func testNoFramesModifiedWhenThereIsAPresentationView() {
+    let presentedViewController = UIViewController()
+    let transition = PresentationTransition()
+    let presentationView = UIView()
+    transition.presentationView = presentationView
+    presentedViewController.transitionController.transition = transition
+
+    let didComplete = expectation(description: "Did complete")
+    window.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
+    window.rootViewController!.present(presentedViewController, animated: true) {
+      didComplete.fulfill()
+    }
+
+    waitForExpectations(timeout: 0.1)
+
+    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
+    XCTAssertEqual(presentationView.frame, .zero)
+    XCTAssertEqual(presentedViewController.view.frame, UIScreen.main.bounds)
+  }
 }
 
 final class TestingPresentationController: UIPresentationController {
   var presentationFrame: CGRect?
+  var presentationView: UIView?
   override var frameOfPresentedViewInContainerView: CGRect {
     if let presentationFrame = presentationFrame {
       return presentationFrame
     }
     return super.frameOfPresentedViewInContainerView
   }
+
+  override var presentedView: UIView? {
+    return presentationView
+  }
+
+  override func presentationTransitionWillBegin() {
+    super.presentationTransitionWillBegin()
+
+    if let presentationView = presentationView {
+      containerView?.addSubview(presentationView)
+    }
+  }
 }
 
 final class PresentationTransition: NSObject, TransitionWithPresentation {
   var presentationFrame: CGRect?
+  var presentationView: UIView?
 
   func defaultModalPresentationStyle() -> UIModalPresentationStyle {
     return .custom
@@ -116,6 +150,7 @@ final class PresentationTransition: NSObject, TransitionWithPresentation {
     let presentationController =
       TestingPresentationController(presentedViewController: presented, presenting: presenting)
     presentationController.presentationFrame = presentationFrame
+    presentationController.presentationView = presentationView
     return presentationController
   }
 
