@@ -1,7 +1,15 @@
-# #develop#
+# 4.0.2
 
- TODO: Enumerate changes.
+This patch release fixes a bug where the frames of custom presented views would be incorrectly set
+to the view controller's frame.
 
+## Source changes
+
+* [Add support for transitions with custom presented views. (#55)](https://github.com/material-motion/motion-transitioning-objc/commit/2564bfdf42a2ba7c550656b95bc7dc98019468bb) (featherless)
+
+## Non-source changes
+
+* [Standardize the kokoro and bazel files. (#51)](https://github.com/material-motion/motion-transitioning-objc/commit/588b63dfae7471f3377041caa08496ef1fa74ced) (featherless)
 
 # 4.0.1
 
