@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = "MotionTransitioning"
   s.summary      = "Light-weight API for building UIViewController transitions."
-  s.version      = "4.0.1"
+  s.version      = "4.0.2"
   s.authors      = "The Material Motion Authors"
   s.license      = "Apache 2.0"
   s.homepage     = "https://github.com/material-motion/transitioning-objc"
