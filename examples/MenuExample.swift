@@ -21,7 +21,7 @@ class MenuExampleViewController: ExampleViewController {
 
   func didTap() {
     let modalViewController = ModalViewController()
-    modalViewController.transitionController.transition = MenuTransition()
+    modalViewController.mdm_transitionController.transition = MenuTransition()
     present(modalViewController, animated: true)
   }
 

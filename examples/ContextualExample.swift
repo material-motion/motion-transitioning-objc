@@ -35,7 +35,7 @@ class ContextualExampleViewController: ExampleViewController {
     // Note that in this example we're populating the contextual transition with the tapped view.
     // Our rudimentary transition will animate the context view to the center of the screen from its
     // current location.
-    controller.transitionController.transition = CompositeTransition(transitions: [
+    controller.mdm_transitionController.transition = CompositeTransition(transitions: [
       FadeTransition(target: .foreView),
       ContextualTransition(contextView: tapGesture.view!)
     ])
