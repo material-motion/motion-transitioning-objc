@@ -60,7 +60,7 @@ class TransitionWithCustomDurationTests: XCTestCase {
   func testDefaultDurationIsProvidedViaContext() {
     let presentedViewController = UIViewController()
     let transition = DurationMemoryTransition()
-    presentedViewController.transitionController.transition = transition
+    presentedViewController.mdm_transitionController.transition = transition
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {
@@ -79,7 +79,7 @@ class TransitionWithCustomDurationTests: XCTestCase {
     let presentedViewController = UIViewController()
     let customDuration: TimeInterval = 0.1
     let transition = CustomDurationMemoryTransition(with: customDuration)
-    presentedViewController.transitionController.transition = transition
+    presentedViewController.mdm_transitionController.transition = transition
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {

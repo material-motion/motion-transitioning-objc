@@ -165,7 +165,7 @@ extension CustomPresentationExampleViewController {
 extension CustomPresentationExampleViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let modal = ModalViewController()
-    modal.transitionController.transition = transitions[indexPath.row].transition
+    modal.mdm_transitionController.transition = transitions[indexPath.row].transition
     showDetailViewController(modal, sender: self)
   }
 }

@@ -32,7 +32,7 @@ class TransitionWithPresentationTests: XCTestCase {
 
   func testPresentationControllerIsQueriedAndCompletesWithoutAnimation() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition =
+    presentedViewController.mdm_transitionController.transition =
       PresentationTransition(presentationControllerType: TestingPresentationController.self)
 
     let didComplete = expectation(description: "Did complete")
@@ -47,7 +47,7 @@ class TransitionWithPresentationTests: XCTestCase {
 
   func testPresentationControllerIsQueriedAndCompletesWithAnimation() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition =
+    presentedViewController.mdm_transitionController.transition =
       PresentationTransition(presentationControllerType: TransitionPresentationController.self)
 
     let didComplete = expectation(description: "Did complete")
