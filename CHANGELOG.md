@@ -1,3 +1,21 @@
+# 5.0.0
+
+This major change introduces a breaking API change for Swift clients.
+
+## Breaking changes
+
+**Swift only**: The UIViewController extension property `transitionController` has been renamed to `mdm_transitionController`.
+
+## Source changes
+
+* [[breaking] Rename the transitionController Swift API to mdm_transitionController. (#59)](https://github.com/material-motion/motion-transitioning-objc/commit/7b3f0c28bc43ed25248fad2e197228fc815b0909) (featherless)
+
+## API changes
+
+### UIViewController
+
+**renamed (swift)** method: `transitionController` to `mdm_transitionController`.
+
 # 4.0.2
 
 This patch release fixes a bug where the frames of custom presented views would be incorrectly set
