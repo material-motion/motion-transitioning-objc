@@ -32,7 +32,7 @@ class TransitionTests: XCTestCase {
 
   func testTransitionDidEndDoesComplete() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition = InstantCompletionTransition()
+    presentedViewController.mdm_transitionController.transition = InstantCompletionTransition()
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {
@@ -46,7 +46,7 @@ class TransitionTests: XCTestCase {
 
   func testTransitionCompositionDoesComplete() {
     let presentedViewController = UIViewController()
-    presentedViewController.transitionController.transition = CompositeTransition(transitions: [
+    presentedViewController.mdm_transitionController.transition = CompositeTransition(transitions: [
       InstantCompletionTransition(),
       InstantCompletionTransition()
     ])
@@ -64,7 +64,7 @@ class TransitionTests: XCTestCase {
   func testTransitionFallbackToOtherTransitionDoesComplete() {
     let presentedViewController = UIViewController()
     let transition = FallbackTransition(to: InstantCompletionTransition())
-    presentedViewController.transitionController.transition = transition
+    presentedViewController.mdm_transitionController.transition = transition
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {
@@ -80,7 +80,7 @@ class TransitionTests: XCTestCase {
   func testTransitionFallbackToSelfDoesComplete() {
     let presentedViewController = UIViewController()
     let transition = FallbackTransition()
-    presentedViewController.transitionController.transition = transition
+    presentedViewController.mdm_transitionController.transition = transition
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {

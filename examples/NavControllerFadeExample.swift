@@ -31,7 +31,7 @@ class NavControllerFadeExampleViewController: ExampleViewController {
     // controller that you'll make use of is the `transition` property. Setting this property will
     // dictate how the view controller is presented. For this example we've built a custom
     // FadeTransition, so we'll make use of that now:
-    modalViewController.transitionController.transition = FadeTransition(target: .foreView)
+    modalViewController.mdm_transitionController.transition = FadeTransition(target: .foreView)
 
     cachedNavDelegate = navigationController?.delegate
 

@@ -73,7 +73,7 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, PhotoA
   public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let viewController = PhotoAlbumViewController(album: album)
     viewController.currentPhoto = album.photos[indexPath.row]
-    viewController.transitionController.transition = PhotoAlbumTransition(backDelegate: self,
+    viewController.mdm_transitionController.transition = PhotoAlbumTransition(backDelegate: self,
                                                                           foreDelegate: viewController)
     present(viewController, animated: true)
   }

@@ -13,7 +13,7 @@ you can pick the custom transition you want to use:
 
 ```swift
 let viewController = MyViewController()
-viewController.transitionController.transition = CustomTransition()
+viewController.mdm_transitionController.transition = CustomTransition()
 present(viewController, animated: true)
 ```
 
@@ -129,7 +129,7 @@ and dismissal of our view controller:
 
 ```swift
 let viewController = MyViewController()
-viewController.transitionController.transition = FadeTransition()
+viewController.mdm_transitionController.transition = FadeTransition()
 present(viewController, animated: true)
 ```
 
