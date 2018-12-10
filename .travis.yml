@@ -1,11 +1,23 @@
 language: objective-c
-osx_image: xcode8.1
 sudo: false
+env:
+  global:
+  - LC_CTYPE=en_US.UTF-8
+  - LANG=en_US.UTF-8
+  - LANGUAGE=en_US.UTF-8
+matrix:
+  include:
+    - osx_image: xcode9.2
+      env: COVERAGE=code_coverage SDK="iphonesimulator11.2" DESTINATION="name=iPhone 6s,OS=11.2"
+    - osx_image: xcode9.2
+      env: SDK="iphonesimulator11.2" DESTINATION="name=iPhone 6s,OS=10.3.1"
+    - osx_image: xcode9.2
+      env: SDK="iphonesimulator11.2" DESTINATION="name=iPhone 6s,OS=9.3"
 before_install:
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - pod install --repo-update
 script:
   - set -o pipefail
-  - xcodebuild build -workspace MotionTransitioning.xcworkspace -scheme TransitionsCatalog -sdk "iphonesimulator10.1" -destination "name=iPhone 6s,OS=10.1" ONLY_ACTIVE_ARCH=YES | xcpretty -c;
+  - xcodebuild test -workspace MotionTransitioning.xcworkspace -scheme TransitionsCatalog -sdk "$SDK" -destination "$DESTINATION" ONLY_ACTIVE_ARCH=YES | xcpretty -c;
 after_success:
   - bash <(curl -s https://codecov.io/bash)
