@@ -16,6 +16,8 @@
 
 #import "MDMViewControllerTransitionCoordinator.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "MDMTransition.h"
 
 @class MDMViewControllerTransitionContextNode;

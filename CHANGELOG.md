@@ -1,3 +1,17 @@
+# 6.0.0
+
+This major release upgrades the bazel dependencies and workspace. This change is breaking for anyone
+using bazel to build this library. In order to use this library with bazel, you will also need to
+upgrade your workspace versions to match the ones now used in this library's `WORKSPACE` file.
+
+## Source changes
+
+* [Add missing import (#60)](https://github.com/material-motion/motion-transitioning-objc/commit/7708bb26c383b88f79a60a8737a26d12cdea498d) (Louis Romero)
+
+## Non-source changes
+
+* [Update bazel workspace to latest versions. (#63)](https://github.com/material-motion/motion-transitioning-objc/commit/09350359468b6e5de09634a67130491761d8fffc) (featherless)
+
 # 5.0.0
 
 This major change introduces a breaking API change for Swift clients.
