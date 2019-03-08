@@ -2,6 +2,10 @@
 
 This major release drops official support for iOS 8.
 
+## Non-source changes
+
+* [Drop support for iOS 8 (#65)](https://github.com/material-motion/motion-transitioning-objc/commit/7be635014d25dead64862822df899d46fda4f248) (featherless)
+
 # 6.0.0
 
 This major release upgrades the bazel dependencies and workspace. This change is breaking for anyone
