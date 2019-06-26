@@ -1,6 +1,11 @@
-# #develop#
+# 7.0.1
 
- TODO: Enumerate changes.
+This patch release fixes a bug on iOS 13 where the presented view controller would not be added to
+the view hierarchy.
+
+## Source changes
+
+* [Always add the toView to the container. (#68)](https://github.com/material-motion/motion-transitioning-objc/commit/0a9568b21375bb5e04e5cf10123eaa06b63f80bd) (featherless)
 
 
 # 7.0.0
