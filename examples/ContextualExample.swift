@@ -21,7 +21,7 @@ import MotionTransitioning
 
 class ContextualExampleViewController: ExampleViewController {
 
-  func didTap(_ tapGesture: UITapGestureRecognizer) {
+  @objc func didTap(_ tapGesture: UITapGestureRecognizer) {
     let controller = DestinationViewController()
 
     // A contextual transition is provided with information relevant to the transition, such as the
@@ -142,7 +142,7 @@ private class DestinationViewController: ExampleViewController {
     view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
   }
 
-  func didTap() {
+  @objc func didTap() {
     dismiss(animated: true)
   }
 }

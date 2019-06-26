@@ -19,7 +19,7 @@ import MotionTransitioning
 
 class MenuExampleViewController: ExampleViewController {
 
-  func didTap() {
+  @objc func didTap() {
     let modalViewController = ModalViewController()
     modalViewController.mdm_transitionController.transition = MenuTransition()
     present(modalViewController, animated: true)

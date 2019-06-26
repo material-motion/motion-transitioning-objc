@@ -22,7 +22,7 @@ import MotionTransitioning
 
 class NavControllerFadeExampleViewController: ExampleViewController {
 
-  func didTap() {
+  @objc func didTap() {
     let modalViewController = ModalViewController()
     modalViewController.title = "Example view controller"
 

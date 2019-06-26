@@ -14,28 +14,30 @@
  limitations under the License.
  */
 
+import Foundation
+
 // MARK: Catalog by convention
 
 extension ContextualExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["Contextual transition"] }
+  @objc class func catalogBreadcrumbs() -> [String] { return ["Contextual transition"] }
 }
 
 extension FadeExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["Fade transition"] }
+  @objc class func catalogBreadcrumbs() -> [String] { return ["Fade transition"] }
 }
 
 extension NavControllerFadeExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["Fade transition (nav controller)"] }
+  @objc class func catalogBreadcrumbs() -> [String] { return ["Fade transition (nav controller)"] }
 }
 
 extension MenuExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["Menu transition"] }
+  @objc class func catalogBreadcrumbs() -> [String] { return ["Menu transition"] }
 }
 
 extension PhotoAlbumExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["Photo album transition"] }
+  @objc class func catalogBreadcrumbs() -> [String] { return ["Photo album transition"] }
 }
 
 extension CustomPresentationExampleViewController {
-  class func catalogBreadcrumbs() -> [String] { return ["Custom presentation transitions"] }
+  @objc class func catalogBreadcrumbs() -> [String] { return ["Custom presentation transitions"] }
 }
