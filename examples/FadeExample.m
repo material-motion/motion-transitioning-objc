@@ -43,7 +43,7 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  self.view.backgroundColor = [UIColor backgroundColor];
+  self.view.backgroundColor = [UIColor whiteColor];
 
   UILabel *label = [[UILabel alloc] initWithFrame:self.view.bounds];
   label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
