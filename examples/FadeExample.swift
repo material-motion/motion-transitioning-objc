@@ -22,7 +22,7 @@ import MotionTransitioning
 
 class FadeExampleViewController: ExampleViewController {
 
-  func didTap() {
+  @objc func didTap() {
     let modalViewController = ModalViewController()
 
     // The transition controller is an associated object on all UIViewController instances that

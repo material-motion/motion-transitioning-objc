@@ -336,17 +336,17 @@
     if (!CGRectIsEmpty(finalFrame)) {
       toView.frame = finalFrame;
     }
+  }
 
-    if (toView.superview == nil) {
-      switch (_direction) {
-        case MDMTransitionDirectionForward:
-          [_transitionContext.containerView addSubview:toView];
-          break;
+  if (toView.superview == nil) {
+    switch (_direction) {
+      case MDMTransitionDirectionForward:
+        [_transitionContext.containerView addSubview:toView];
+        break;
 
-        case MDMTransitionDirectionBackward:
-          [_transitionContext.containerView insertSubview:toView atIndex:0];
-          break;
-      }
+      case MDMTransitionDirectionBackward:
+        [_transitionContext.containerView insertSubview:toView atIndex:0];
+        break;
     }
   }
 

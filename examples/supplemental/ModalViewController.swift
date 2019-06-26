@@ -38,7 +38,7 @@ class ModalViewController: ExampleViewController {
     return .lightContent
   }
 
-  func didTap() {
+  @objc func didTap() {
     dismiss(animated: true)
   }
 }
