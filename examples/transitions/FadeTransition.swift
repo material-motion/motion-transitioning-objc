@@ -50,7 +50,7 @@ final class FadeTransition: NSObject, Transition {
 
     let fade = CABasicAnimation(keyPath: "opacity")
 
-    fade.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+    fade.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
 
     switch style {
     case .fadeIn:

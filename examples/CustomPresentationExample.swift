@@ -22,7 +22,7 @@ import MotionTransitioning
 
 class CustomPresentationExampleViewController: ExampleTableViewController {
 
-  override init(style: UITableViewStyle) {
+  override init(style: UITableView.Style) {
     super.init(style: style)
 
     transitions = []
