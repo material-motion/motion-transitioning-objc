@@ -1,13 +1,13 @@
 PODS:
   - CatalogByConvention (2.1.1)
-  - MotionTransitioning (7.0.0)
+  - MotionTransitioning (7.0.1)
 
 DEPENDENCIES:
   - CatalogByConvention
   - MotionTransitioning (from `./`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - CatalogByConvention
 
 EXTERNAL SOURCES:
@@ -16,8 +16,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   CatalogByConvention: c3a5319de04250a7cd4649127fcfca5fe3322a43
-  MotionTransitioning: afdc2fb08fc6e8744dab4f160b3764c9bde59338
+  MotionTransitioning: 15a4ab27c32a0849c11e43043c61b605e96a85ac
 
 PODFILE CHECKSUM: c1fb58e87919bf8979e1ee2b4db99797e975d789
 
-COCOAPODS: 1.6.0
+COCOAPODS: 1.9.3
