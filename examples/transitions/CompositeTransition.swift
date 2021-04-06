@@ -37,7 +37,7 @@ final class CompositeTransition: NSObject, Transition, TransitionWithCustomDurat
   // MARK: TransitionWithCustomDuration
 
   func transitionDuration(with context: TransitionContext) -> TimeInterval {
-    let duration = transitions.flatMap { $0 as? TransitionWithCustomDuration }.map { $0.transitionDuration(with: context) }.max { $0 < $1 }
+    let duration = transitions.compactMap { $0 as? TransitionWithCustomDuration }.map { $0.transitionDuration(with: context) }.max { $0 < $1 }
     if let duration = duration {
       return duration
     }
