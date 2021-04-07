@@ -1,3 +1,7 @@
+# 8.0.0
+
+This major release drops official support for iOS 9 and bazel.
+
 # 7.0.1
 
 This patch release fixes a bug on iOS 13 where the presented view controller would not be added to
