@@ -75,6 +75,7 @@ public class PhotoAlbumExampleViewController: UICollectionViewController, PhotoA
     viewController.currentPhoto = album.photos[indexPath.row]
     viewController.mdm_transitionController.transition = PhotoAlbumTransition(backDelegate: self,
                                                                           foreDelegate: viewController)
+    viewController.modalPresentationStyle = .custom
     present(viewController, animated: true)
   }
 
