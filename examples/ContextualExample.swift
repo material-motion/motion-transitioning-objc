@@ -110,7 +110,7 @@ private class ContextualTransition: NSObject, Transition {
                                                    isAppearing: context.direction == .backward)
 
     let expand = CABasicAnimation(keyPath: "transform.scale.xy")
-    expand.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+    expand.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
     expand.fromValue = 1
     expand.toValue = 2
     addAnimationToLayer(expand, snapshotContextView.layer)

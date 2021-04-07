@@ -53,7 +53,7 @@ class ExampleTableViewController: UITableViewController {
     self.init(style: .plain)
   }
 
-  override init(style: UITableViewStyle) {
+  override init(style: UITableView.Style) {
     super.init(style: style)
 
     self.title = exampleInformation().title
