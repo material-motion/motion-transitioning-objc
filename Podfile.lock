@@ -1,6 +1,6 @@
 PODS:
   - CatalogByConvention (2.5.2)
-  - MotionTransitioning (7.0.1)
+  - MotionTransitioning (8.0.0)
 
 DEPENDENCIES:
   - CatalogByConvention
@@ -16,7 +16,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   CatalogByConvention: ef713654160053be026fa4648dd28caf6b5ca4e1
-  MotionTransitioning: 6b05ac8a586879890466edb213b54ae87fadd70f
+  MotionTransitioning: c54913ff269a0d93291bb113612c2da325f45f74
 
 PODFILE CHECKSUM: d209f6834e4d16c2a6eca09a6ddcde7e50331cda
 
