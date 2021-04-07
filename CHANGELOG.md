@@ -1,6 +1,6 @@
 # 8.0.0
 
-This major release drops official support for iOS 9.
+This major release drops official support for iOS 9 and bazel.
 
 # 7.0.1
 
