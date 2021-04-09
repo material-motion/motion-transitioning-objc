@@ -32,8 +32,21 @@ class TransitionWithPresentationTests: XCTestCase {
 
   func testPresentationControllerIsQueriedAndCompletesWithoutAnimation() {
     let presentedViewController = UIViewController()
-    presentedViewController.mdm_transitionController.transition =
-      PresentationTransition(presentationControllerType: TestingPresentationController.self)
+    presentedViewController.mdm_transitionController.transition = TestingPresentationTransition()
+
+    let didComplete = expectation(description: "Did complete")
+    window.rootViewController!.present(presentedViewController, animated: false) {
+      didComplete.fulfill()
+    }
+
+    waitForExpectations(timeout: 0.5)
+
+    XCTAssert(presentedViewController.presentationController is TestingPresentationController)
+  }
+
+  func testPresentationControllerIsQueriedAndCompletesWithAnimation() {
+    let presentedViewController = UIViewController()
+    presentedViewController.mdm_transitionController.transition = TestingPresentationTransition()
 
     let didComplete = expectation(description: "Did complete")
     window.rootViewController!.present(presentedViewController, animated: true) {
@@ -45,39 +58,102 @@ class TransitionWithPresentationTests: XCTestCase {
     XCTAssert(presentedViewController.presentationController is TestingPresentationController)
   }
 
-  func testPresentationControllerIsQueriedAndCompletesWithAnimation() {
+  func testPresentedFrameMatchesWindowFrame() {
     let presentedViewController = UIViewController()
-    presentedViewController.mdm_transitionController.transition =
-      PresentationTransition(presentationControllerType: TransitionPresentationController.self)
+    let transition = InstantCompletionTransition()
+    presentedViewController.transitionController.transition = transition
 
     let didComplete = expectation(description: "Did complete")
+    window.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
     window.rootViewController!.present(presentedViewController, animated: true) {
       didComplete.fulfill()
     }
 
-    waitForExpectations(timeout: 0.5)
+    waitForExpectations(timeout: 0.1)
 
-    XCTAssert(presentedViewController.presentationController is TransitionPresentationController)
+    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
+    XCTAssertEqual(window.rootViewController!.presentedViewController?.view.bounds,
+                   window.rootViewController!.view.bounds)
+  }
+
+  func testPresentedFrameMatchesPresentationFrame() {
+    let presentedViewController = UIViewController()
+    let transition = TestingPresentationTransition()
+    transition.presentationFrame = CGRect(x: 100, y: 30, width: 50, height: 70)
+    presentedViewController.transitionController.transition = transition
+
+    let didComplete = expectation(description: "Did complete")
+    window.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
+    window.rootViewController!.present(presentedViewController, animated: true) {
+      didComplete.fulfill()
+    }
+
+    waitForExpectations(timeout: 0.1)
+
+    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
+    XCTAssertEqual(window.rootViewController!.presentedViewController?.view.frame,
+                   transition.presentationFrame)
+  }
+
+  func testNoFramesModifiedWhenThereIsAPresentationView() {
+    let presentedViewController = UIViewController()
+    let transition = TestingPresentationTransition()
+    let presentationFrame = CGRect(x: 0, y: 0, width: 100, height: 100)
+    let presentationView = UIView(frame: presentationFrame)
+    transition.presentationView = presentationView
+    presentedViewController.transitionController.transition = transition
+
+    let didComplete = expectation(description: "Did complete")
+    window.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
+    window.rootViewController!.present(presentedViewController, animated: true) {
+      didComplete.fulfill()
+    }
+
+    waitForExpectations(timeout: 0.1)
+
+    XCTAssertEqual(window.rootViewController!.presentedViewController, presentedViewController)
+    XCTAssertEqual(presentationView.frame, presentationFrame)
+    XCTAssertEqual(presentedViewController.view.frame, UIScreen.main.bounds)
   }
 }
 
 final class TestingPresentationController: UIPresentationController {
+  var presentationFrame: CGRect?
+  var presentationView: UIView?
+  override var frameOfPresentedViewInContainerView: CGRect {
+    if let presentationFrame = presentationFrame {
+      return presentationFrame
+    }
+    return super.frameOfPresentedViewInContainerView
+  }
+
+  override var presentedView: UIView? {
+    return presentationView
+  }
+
+  override func presentationTransitionWillBegin() {
+    super.presentationTransitionWillBegin()
+
+    if let presentationView = presentationView {
+      containerView?.addSubview(presentationView)
+    }
+  }
 }
 
-final class PresentationTransition: NSObject, TransitionWithPresentation {
-  let presentationControllerType: UIPresentationController.Type
-  init(presentationControllerType: UIPresentationController.Type) {
-    self.presentationControllerType = presentationControllerType
-
-    super.init()
-  }
+final class TestingPresentationTransition: NSObject, TransitionWithPresentation {
+  var presentationFrame: CGRect?
+  var presentationView: UIView?
 
   func defaultModalPresentationStyle() -> UIModalPresentationStyle {
     return .custom
   }
 
   func presentationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController?) -> UIPresentationController? {
-    return presentationControllerType.init(presentedViewController: presented, presenting: presenting)
+    let presentationController =
+      TestingPresentationController(presentedViewController: presented, presenting: presenting)
+    presentationController.presentationFrame = presentationFrame
+    presentationController.presentationView = presentationView
+    return presentationController
   }
 
   func start(with context: TransitionContext) {
