@@ -18,9 +18,7 @@
 
 @protocol MDMTransition;
 
-/**
- The possible directions of a transition.
- */
+/** The possible directions of a transition. */
 typedef NS_ENUM(NSUInteger, MDMTransitionDirection) {
   /**
    The fore view controller is being presented.
