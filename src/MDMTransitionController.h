@@ -16,6 +16,9 @@
 
 #import <Foundation/Foundation.h>
 
+API_DEPRECATED_BEGIN("Use standard UIViewController transitioning APIs instead.",
+                     ios(12, API_TO_BE_DEPRECATED))
+
 @protocol MDMTransition;
 
 /**
@@ -46,3 +49,5 @@ NS_SWIFT_NAME(TransitionController)
 @property(nonatomic, strong, nullable, readonly) id<MDMTransition> activeTransition;
 
 @end
+
+API_DEPRECATED_END

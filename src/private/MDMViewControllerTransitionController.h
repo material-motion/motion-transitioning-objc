@@ -19,6 +19,9 @@
 
 #import "MDMTransitionController.h"
 
+API_DEPRECATED_BEGIN("Use standard UIViewController transitioning APIs instead.",
+                     ios(12, API_TO_BE_DEPRECATED))
+
 @interface MDMViewControllerTransitionController : NSObject <MDMTransitionController, UIViewControllerTransitioningDelegate>
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController
@@ -27,3 +30,5 @@
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
 @end
+
+API_DEPRECATED_END

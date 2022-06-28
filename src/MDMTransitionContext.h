@@ -16,6 +16,9 @@
 
 #import <UIKit/UIKit.h>
 
+API_DEPRECATED_BEGIN("Use standard UIViewController transitioning APIs instead.",
+                     ios(12, API_TO_BE_DEPRECATED))
+
 @protocol MDMTransition;
 
 /** The possible directions of a transition. */
@@ -100,3 +103,5 @@ NS_SWIFT_NAME(TransitionContext)
 - (void)deferToCompletion:(void (^ _Nonnull)(void))work;
 
 @end
+
+API_DEPRECATED_END

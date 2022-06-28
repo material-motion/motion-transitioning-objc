@@ -16,6 +16,9 @@
 
 #import "MDMTransitionContext.h"
 
+API_DEPRECATED_BEGIN("Use standard UIViewController transitioning APIs instead.",
+                     ios(12, API_TO_BE_DEPRECATED))
+
 @protocol MDMTransition;
 @protocol MDMViewControllerTransitionCoordinatorDelegate;
 
@@ -40,3 +43,5 @@
 - (void)transitionDidCompleteWithCoordinator:(nonnull MDMViewControllerTransitionCoordinator *)coordinator;
 
 @end
+
+API_DEPRECATED_END

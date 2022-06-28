@@ -17,6 +17,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+API_DEPRECATED_BEGIN("Use standard UIViewController transitioning APIs instead.",
+                     ios(12, API_TO_BE_DEPRECATED))
+
 /**
  A view snapshotter creates visual replicas of views so that they may be animated during a
  transition without adversely affecting the original view hierarchy.
@@ -55,3 +58,5 @@ NS_SWIFT_NAME(TransitionViewSnapshotter)
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
 @end
+
+API_DEPRECATED_END

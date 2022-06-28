@@ -16,6 +16,9 @@
 
 #import <UIKit/UIKit.h>
 
+API_DEPRECATED_BEGIN("Use standard UIViewController transitioning APIs instead.",
+                     ios(12, API_TO_BE_DEPRECATED))
+
 @protocol MDMTransitionContext;
 
 /**
@@ -134,3 +137,5 @@ NS_SWIFT_NAME(presentationController(forPresented:presenting:source:));
 // clang-format on
 
 @end
+
+API_DEPRECATED_END

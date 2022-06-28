@@ -16,6 +16,9 @@
 
 #import <UIKit/UIKit.h>
 
+API_DEPRECATED_BEGIN("Use standard UIViewController transitioning APIs instead.",
+                     ios(12, API_TO_BE_DEPRECATED))
+
 /**
  This class provides a singleton implementation of UINavigationControllerDelegate that makes it
  possible to configure view controller transitions using each view controller's transition
@@ -55,3 +58,5 @@ NS_SWIFT_NAME(TransitionNavigationControllerDelegate)
                                   interactionControllerForAnimationController:(nonnull id<UIViewControllerAnimatedTransitioning>)animationController;
 
 @end
+
+API_DEPRECATED_END
